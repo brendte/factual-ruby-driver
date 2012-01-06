@@ -8,6 +8,7 @@ module Factual
     API_V3_HOST = "http://api.v3.factual.com"
     DRIVER_VERSION_TAG = "factual-ruby-driver-1.0"
 
+    DEFAULT_LIMIT = 20
     PARAM_ALIASES = { :query => :q }
 
     VALID_PARAMS = {
@@ -93,7 +94,33 @@ module Factual
       end
     end
     
+    # sugers
+    # ----------------
+    def sort_desc(*args)
+      api = self.class.clone(self)
+      columns = args.collect{ |col|"#{col}:desc" }
+      api.set_param(:sort, columns.join(','))
+
+      return api
+    end
+
+    def page(page_num, paging_opts = {})
+      limit = (paging_opts[:per] || paging_opts["per"]).to_i
+      limit = DEFAULT_LIMIT if limit < 1
+
+      page_num = page_num.to_i
+      page_num = 1 if page_num < 1
+      offset   = (page_num - 1) * limit
+
+      api = self.class.clone(self)
+      api.set_param(:limit, limit)
+      api.set_param(:offset, offset)
+
+      return api
+    end
+
     # actions
+    # ----------------
     def crosswalk(factual_id)
       @path   = "places/crosswalk"
       @action = :crosswalk
