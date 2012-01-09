@@ -6,21 +6,65 @@ This is the Factual supported Ruby driver for [Factual's public API](http://deve
 
 TODO: gemify
 
-    require 'factual'
-    factual = Factual.new("YOUR_KEY", "YOUR_SECRET")
+    gem 'factual'
+    require 'factual_api'
+    factual = Factual::Api.new(YOUR_KEY, YOUR_SECRET)
   
 # Examples
 
-## Read
+## Quick Sample 
 
-    # Returns Places with names beginning with "Star", as JSON
-    factual.find("places", {:filters => {"name" => {"$bw" => "Star"}}})
+    # Returns Places with names beginning with "Star"
+    factual.table("places").filters("name" => {"$bw" => "Star"}).rows
+
+## Read (with all features)
+
+    # 1. Specify the table Global
+    query = factual.table("global")
+
+    # 2. Filter results in country US (For more filters syntax, refer to http://developer.factual.com/display/docs/Core+API+-+Row+Filters)
+    query = query.filters("country" => "US")
+
+    # 3. Search for "sushi" or "sashimi" (For more search syntax, refer to http://developer.factual.com/display/docs/Core+API+-+Row+Filters)
+    query = query.query("sushi", "sashimi")
+
+    # 4. Filter by Geo (For more geo syntax, refer to )
+    query = query.geo("$circle" => {"$center" => [34.06021, -118.41828], "$meters" => 5000})
+
+    # 5. Sort it 
+    query = query.sort("name")            # ascending 
+    query = query.sort_desc("name")       # descending
+    query = query.sort("address", "name") # sort by multiple columns
+
+    # 6. Page it
+    query = query.page(2, :per => 10)
+
+    # 7. Finally, get response in Factual::Row objects
+    query.first    # return one row
+    query.rows     # return many rows
+
+    # 8. Returns total row counts that matches the criteria
+    query.total_count
+
+    # You can chain the query methods, like this
+    factual.table("places").filters("region" => "CA").query("sushi", "sashimi").geo("$circle" => {"$center" => [34.06021, -118.41828], "$meters" => 5000}).sort("name").page(2, :per => 10).rows
+
+## Crosswalk
+
+    # Concordance information of a place
+    FACTUAL_ID = "110ace9f-80a7-47d3-9170-e9317624ebd9"
+    factual.crosswalk(FACTUAL_ID)
 
 ## Resolve
 
-    # Returns resolved entities as JSON
-    factual.resolve("places", {"name" => "McDonalds",
-                               "address" => "10451 Santa Monica Blvd",
-                               "region" => "CA",
-                               "postcode" => "90025"})
+    # Returns resolved entities as Factual::Row objects
+    factual.resolve("name" => "McDonalds",
+                    "address" => "10451 Santa Monica Blvd",
+                    "region" => "CA",
+                    "postcode" => "90025")
+
+## Facets
+
+    # Returns number of starbucks in regions thoughout the world
+    factual.table("global").select("country", "region").query("starbucks").min_count(2).facets()
 
