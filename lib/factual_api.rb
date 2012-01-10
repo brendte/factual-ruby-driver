@@ -9,13 +9,14 @@ module Factual
     DRIVER_VERSION_TAG = "factual-ruby-driver-1.0"
 
     DEFAULT_LIMIT = 20
-    PARAM_ALIASES = { :query => :q }
+    PARAM_ALIASES = { :search => :q }
 
     VALID_PARAMS = {
-      :read      => [ :filters, :query, :geo, :sort, :select, :limit, :offset ],
+      :read      => [ :filters, :search, :geo, :sort, :select, :limit, :offset ],
       :resolve   => [ :values ],
       :crosswalk => [ :factual_id ],
-      :facets    => [ :filters, :query, :geo, :limit, :select, :min_count ],
+      :facets    => [ :filters, :search, :geo, :limit, :select, :min_count ],
+      :schema    => [ ],
       :any       => [ :include_count ]
     }
 
@@ -59,6 +60,23 @@ module Factual
       else
         return Row.new(row_data)
       end
+    end
+
+    def schema
+      @path  += "/schema"
+      @action = :schema
+
+      view   = response["view"]
+      fields = view["fields"]
+
+      schema = Table.new(view)
+      if schema && fields
+        schema.fields = fields.collect do |f|
+          Field.new(f)
+        end
+      end
+
+      return schema
     end
 
     def facets
@@ -122,26 +140,35 @@ module Factual
     # actions
     # ----------------
     def crosswalk(factual_id)
-      @path   = "places/crosswalk"
-      @action = :crosswalk
-      @params = { :factual_id => factual_id }
+      api = self
 
-      return self
+      api.path   = "places/crosswalk"
+      api.action = :crosswalk
+      api.params = { :factual_id => factual_id }
+
+      return api
     end
 
     def resolve(values)
-      @action = :resolve
-      @path   = "places/resolve"
-      @params = { :values => values }
+      api = self
 
-      return self
+      api.action = :resolve
+      api.path   = "places/resolve"
+      api.params = { :values => values }
+
+      return api
     end
 
     def table(table_id_or_alias)
-      @path   = "t/#{table_id_or_alias}"
-      @action = :read
+      api = self
+      if @response
+        api = self.class.clone(self)
+      end
 
-      return self
+      api.path   = "t/#{table_id_or_alias}"
+      api.action = :read
+
+      return api
     end
 
     private
@@ -149,10 +176,11 @@ module Factual
     # real requesting
     # ----------------
     def response
-      return @response if @response
+      @response ||= {}
+      return @response[@action] if @response[@action]
       
-      # always include count
-      @params[:include_count] = true
+      # always include count for reads
+      @params[:include_count] = true unless @action == :schema
 
       res = request()
 
@@ -161,12 +189,12 @@ module Factual
       payload = JSON.parse(json)
 
       if payload["status"] == "ok"
-        @response = payload["response"]
+        @response[@action] = payload["response"]
       else
         raise StandardError.new(payload["message"])
       end
       
-      return @response
+      return @response[@action]
     end
 
     def request
@@ -196,4 +224,6 @@ module Factual
   # ----------------
   class Row < OpenStruct; end
   class Facet < OpenStruct; end
+  class Table < OpenStruct; end
+  class Field < OpenStruct; end
 end

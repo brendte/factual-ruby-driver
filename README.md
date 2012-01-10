@@ -26,7 +26,7 @@ TODO: gemify
     query = query.filters("country" => "US")
 
     # 3. Search for "sushi" or "sashimi" (For more search syntax, refer to http://developer.factual.com/display/docs/Core+API+-+Row+Filters)
-    query = query.query("sushi", "sashimi")
+    query = query.search("sushi", "sashimi")
 
     # 4. Filter by Geo (For more geo syntax, refer to )
     query = query.geo("$circle" => {"$center" => [34.06021, -118.41828], "$meters" => 5000})
@@ -47,7 +47,7 @@ TODO: gemify
     query.total_count
 
     # You can chain the query methods, like this
-    factual.table("places").filters("region" => "CA").query("sushi", "sashimi").geo("$circle" => {"$center" => [34.06021, -118.41828], "$meters" => 5000}).sort("name").page(2, :per => 10).rows
+    factual.table("places").filters("region" => "CA").search("sushi", "sashimi").geo("$circle" => {"$center" => [34.06021, -118.41828], "$meters" => 5000}).sort("name").page(2, :per => 10).rows
 
 ## Crosswalk
 
@@ -63,8 +63,13 @@ TODO: gemify
                     "region" => "CA",
                     "postcode" => "90025")
 
+## Schema
+
+    # Returns a Factual::Table object whose fields are an array of Factual::Field objects
+    factual.table("global").schema()
+
 ## Facets
 
     # Returns number of starbucks in regions thoughout the world
-    factual.table("global").select("country", "region").query("starbucks").min_count(2).facets()
+    factual.table("global").select("country", "region").search("starbucks").min_count(2).facets()
 

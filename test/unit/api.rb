@@ -16,8 +16,8 @@ class ApiTest < Test::Unit::TestCase
     row = @api.table(:global).first
     assert_equal row.factual_id.length, 36
 
-    # query
-    row = @api.table(:global).query('factual').first
+    # search
+    row = @api.table(:global).search('factual').first
     assert_match /Factual/, row.name 
 
   end
@@ -43,30 +43,30 @@ class ApiTest < Test::Unit::TestCase
 
   def test_rows
     # basic
-    api = @api.table(:global)
-    rows = api.rows
-    total_count = api.total_count
+    query = @api.table(:global)
+    rows = query.rows
+    total_count = query.total_count
     assert (total_count > 55_000_000)
     assert_equal rows.length, 20
 
-    # query
-    api = @api.table(:global).query('factual')
-    api.rows.each do |row|
+    # search
+    query = @api.table(:global).search('factual')
+    query.rows.each do |row|
       assert_match /Factual/, row.name 
     end
   end
 
   def test_immutable
-    api1 = @api.table(:global).query('factual')
-    api2 = api1.filters(:locality => 'los angeles')
+    query1 = @api.table(:global).search('factual')
+    query2 = query1.filters(:locality => 'los angeles')
 
-    assert_no_match /stars/i, api1.first.address
-    assert_match /stars/i, api2.first.address
+    assert_no_match /stars/i, query1.first.address
+    assert_match /stars/i, query2.first.address
   end
 
   def test_format
-    json_api = Factual::Api.new( FACTUAL_OAUTH_KEY, FACTUAL_OAUTH_SECRET, :json )
-    assert_equal json_api.table(:global).first.class, Hash
+    json_query = Factual::Api.new( FACTUAL_OAUTH_KEY, FACTUAL_OAUTH_SECRET, :json )
+    assert_equal json_query.table(:global).first.class, Hash
 
     assert_equal @api.table(:global).first.class, Factual::Row
   end
@@ -85,7 +85,12 @@ class ApiTest < Test::Unit::TestCase
   end
 
   def test_facets
-    api = @api.table(:global).select(:region, :locality).query('factual').min_count(2)
-    assert_equal api.facets().region.length, 8
+    query = @api.table(:global).select(:region, :locality).search('factual').min_count(2)
+    assert_equal query.facets().region.length, 8
+  end
+
+  def test_schema
+    schema = @api.table(:global).schema()
+    assert_equal schema.fields.length, 21
   end
 end
