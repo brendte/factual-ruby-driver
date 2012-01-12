@@ -65,23 +65,23 @@ class ApiTest < Test::Unit::TestCase
   end
 
   def test_format
-    json_query = Factual::Api.new( FACTUAL_OAUTH_KEY, FACTUAL_OAUTH_SECRET, :json )
-    assert_equal json_query.table(:global).first.class, Hash
+    query = @api.table(:global, :json)
+    assert_equal query.first.class, Hash
 
     assert_equal @api.table(:global).first.class, Factual::Row
   end
 
   def test_crosswalk
-    @api.crosswalk(FACTUAL_ID)
+    query = @api.crosswalk(FACTUAL_ID)
 
-    assert_equal @api.first.namespace, 'facebook'
+    assert_equal query.first.namespace, 'facebook'
   end
 
   def test_resolve
-    @api.resolve(:name => 'factual inc', :region => 'ca')
+    query = @api.resolve(:name => 'factual inc', :region => 'ca')
 
-    assert @api.first.resolved
-    assert_match /stars/i, @api.first.address
+    assert query.first.resolved
+    assert_match /stars/i, query.first.address
   end
 
   def test_facets

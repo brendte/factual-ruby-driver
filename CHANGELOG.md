@@ -1,3 +1,6 @@
+## v0.2
+* refactoring
+
 ## v0.1
 * initial version
 ** a table agnostic read api, usage as: api.table(table_alias).rows

@@ -5,11 +5,65 @@ require 'ostruct'
 
 module Factual
   class Api
-    API_V3_HOST = "http://api.v3.factual.com"
+    API_V3_HOST        = "http://api.v3.factual.com"
     DRIVER_VERSION_TAG = "factual-ruby-driver-1.0"
+    PARAM_ALIASES      = { :search => :q }
 
+    # initializers
+    # ----------------
+    def initialize(key, secret)
+      @access_token = OAuth::AccessToken.new(
+        OAuth::Consumer.new(key, secret))
+    end
+
+    # actions
+    # ----------------
+    def crosswalk(factual_id, format = :object)
+      query = Query.new(self, :crosswalk, "places/crosswalk", { :factual_id => factual_id }, format)
+
+      return query
+    end
+
+    def resolve(values, format = :object)
+      query = Query.new(self, :resolve, "places/resolve", { :values => values }, format)
+
+      return query
+    end
+
+    def table(table_id_or_alias, format = :object)
+      query = Query.new(self, :read, "t/#{table_id_or_alias}", Hash.new, format)
+
+      return query
+    end
+
+    # requesting
+    # ----------------
+    def request(path, params)
+      url     = "#{API_V3_HOST}/#{path}?#{query_string(params)}"
+      headers = {"X-Factual-Lib" => DRIVER_VERSION_TAG}
+
+      return @access_token.get(url, headers)
+    end
+
+    private
+
+    def query_string(params)
+      arr = []
+      params.each do |param, v|
+        param_alias = PARAM_ALIASES[param.to_sym] || param.to_sym
+
+        v = v.to_json if v.class == Hash
+        arr << "#{param_alias}=#{URI.escape(v.to_s)}"
+      end
+      return arr.join("&")
+    end
+
+  end
+
+  class Query
+
+    # helper functions
     DEFAULT_LIMIT = 20
-    PARAM_ALIASES = { :search => :q }
 
     VALID_PARAMS = {
       :read      => [ :filters, :search, :geo, :sort, :select, :limit, :offset ],
@@ -20,30 +74,24 @@ module Factual
       :any       => [ :include_count ]
     }
 
-    attr_accessor :access_token, :path, :params, :action, :format
+    attr_accessor :params
 
     # initializers
     # ----------------
-    def initialize(key, secret, format = :object)
-      @access_token = OAuth::AccessToken.new(
-        OAuth::Consumer.new(key, secret))
-
+    def initialize(api, action, path, params = nil, format = :object)
+      @api    = api
+      @action = action
+      @path   = path
+      @params = params || Hash.new
       @format = format
-      @params = Hash.new
     end
     
     # helper functions
     # ----------------
-    def self.clone(api)
-      new_api = self.new(nil, nil)
+    def clone
+      new_query = self.class.new(@api, @action, @path, @params.clone, @format)
 
-      new_api.access_token = api.access_token
-      new_api.path         = api.path
-      new_api.action       = api.action
-      new_api.format       = api.format
-      new_api.params       = api.params.clone
-
-      return new_api
+      return new_query
     end
 
     def set_param(key, value)
@@ -53,20 +101,35 @@ module Factual
     # attributes, after 'get'
     # ----------------
     def first
-      row_data = response["data"].first 
+      row_data = read_response["data"].first
 
-      if (@format == :json) # or :hash ?
+      if (@format == :json) # or :object
         return row_data
       else
         return Row.new(row_data)
       end
     end
 
-    def schema
-      @path  += "/schema"
-      @action = :schema
+    def rows
+      return read_response["data"] if (@format == :json)
 
-      view   = response["view"]
+      return read_response["data"].collect do |row_data|
+        Row.new(row_data)
+      end
+    end
+
+    def total_count
+      read_response["total_row_count"]
+    end
+
+
+    def schema
+      unless @schema_response
+        @path  += "/schema"
+        @schema_response = response(:schema)
+      end
+
+      view   = @schema_response["view"]
       fields = view["fields"]
 
       schema = Table.new(view)
@@ -80,30 +143,20 @@ module Factual
     end
 
     def facets
-      @path  += "/facets"
-      @action = :facets
-      columns = response["data"]
-      
-      return Facet.new(columns)
-    end
-
-    def total_count
-      response["total_row_count"]
-    end
-
-    def rows
-      return response["data"] if (@format == :json)
-
-      return response["data"].collect do |row_data|
-        Row.new(row_data)
+      unless @facets_response
+        @path  += "/facets"
+        @facets_response = response(:facets)
       end
+      columns = @facets_response["data"]
+
+      return Facet.new(columns)
     end
 
     # query builder, returns immutable ojbects
     # ----------------
     VALID_PARAMS.values.flatten.uniq.each do |param|
       define_method(param) do |*args|
-        api = self.class.clone(self)
+        api = self.clone()
         val = (args.length == 1) ? args.first : args.join(',')
 
         api.set_param(param, val)
@@ -115,7 +168,7 @@ module Factual
     # sugers
     # ----------------
     def sort_desc(*args)
-      api = self.class.clone(self)
+      api = self.clone
       columns = args.collect{ |col|"#{col}:desc" }
       api.set_param(:sort, columns.join(','))
 
@@ -130,92 +183,49 @@ module Factual
       page_num = 1 if page_num < 1
       offset   = (page_num - 1) * limit
 
-      api = self.class.clone(self)
+      api = self.clone
       api.set_param(:limit, limit)
       api.set_param(:offset, offset)
 
       return api
     end
 
-    # actions
+    # requesting
     # ----------------
-    def crosswalk(factual_id)
-      api = self
-
-      api.path   = "places/crosswalk"
-      api.action = :crosswalk
-      api.params = { :factual_id => factual_id }
-
-      return api
-    end
-
-    def resolve(values)
-      api = self
-
-      api.action = :resolve
-      api.path   = "places/resolve"
-      api.params = { :values => values }
-
-      return api
-    end
-
-    def table(table_id_or_alias)
-      api = self
-      if @response
-        api = self.class.clone(self)
-      end
-
-      api.path   = "t/#{table_id_or_alias}"
-      api.action = :read
-
-      return api
-    end
-
     private
 
-    # real requesting
-    # ----------------
-    def response
-      @response ||= {}
-      return @response[@action] if @response[@action]
-      
-      # always include count for reads
-      @params[:include_count] = true unless @action == :schema
+    def read_response
+      if @read_response
+        return @read_response
+      else
+        # always include count for reads
+        @params[:include_count] = true
+        return response(@action || :read)
+      end
+    end
 
-      res = request()
+    def check_params!(action)
+      @params.each do |param, val|
+        unless (VALID_PARAMS[action] + VALID_PARAMS[:any]).include?(param)
+          raise StandardError.new("InvalidArgument #{param} for #{action}")
+        end
+      end
+    end
+
+    def response(action)
+      check_params!(action)
+
+      res = @api.request(@path, @params)
 
       code    = res.code
       json    = res.body
       payload = JSON.parse(json)
 
       if payload["status"] == "ok"
-        @response[@action] = payload["response"]
+        return payload["response"]
       else
         raise StandardError.new(payload["message"])
       end
-      
-      return @response[@action]
-    end
-
-    def request
-      url     = "#{API_V3_HOST}/#{@path}?#{query_string}" 
-      headers = {"X-Factual-Lib" => DRIVER_VERSION_TAG}
-
-      return @access_token.get(url, headers)
-    end
-
-    def query_string()
-      arr = []
-      @params.each do |param, v|
-        unless (VALID_PARAMS[@action] + VALID_PARAMS[:any]).include?(param)
-          raise StandardError.new("InvalidArgument #{param} for #{@action}") 
-        end
-        param_alias = PARAM_ALIASES[param.to_sym] || param.to_sym
-
-        v = v.to_json if v.class == Hash
-        arr << "#{param_alias}=#{URI.escape(v.to_s)}"
-      end
-      return arr.join("&")
     end
 
   end

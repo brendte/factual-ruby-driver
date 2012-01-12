@@ -51,15 +51,19 @@ This is the Factual supported Ruby driver for [Factual's public API](http://deve
 
     # Concordance information of a place
     FACTUAL_ID = "110ace9f-80a7-47d3-9170-e9317624ebd9"
-    factual.crosswalk(FACTUAL_ID)
+    query = factual.crosswalk(FACTUAL_ID)
+    query.rows
 
 ## Resolve
 
     # Returns resolved entities as Factual::Row objects
-    factual.resolve("name" => "McDonalds",
+    query = factual.resolve("name" => "McDonalds",
                     "address" => "10451 Santa Monica Blvd",
                     "region" => "CA",
                     "postcode" => "90025")
+
+    query.first.resolved # true or false
+    query.rows           # resolved rows
 
 ## Schema
 
