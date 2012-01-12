@@ -4,9 +4,7 @@ This is the Factual supported Ruby driver for [Factual's public API](http://deve
 
 # Installation
 
-TODO: gemify
-
-    gem 'factual'
+    gem 'factual-api'
     require 'factual_api'
     factual = Factual::Api.new(YOUR_KEY, YOUR_SECRET)
   
@@ -22,13 +20,13 @@ TODO: gemify
     # 1. Specify the table Global
     query = factual.table("global")
 
-    # 2. Filter results in country US (For more filters syntax, refer to http://developer.factual.com/display/docs/Core+API+-+Row+Filters)
+    # 2. Filter results in country US (For more filters syntax, refer to [Core API - Row Filters](http://developer.factual.com/display/docs/Core+API+-+Row+Filters))
     query = query.filters("country" => "US")
 
-    # 3. Search for "sushi" or "sashimi" (For more search syntax, refer to http://developer.factual.com/display/docs/Core+API+-+Row+Filters)
+    # 3. Search for "sushi" or "sashimi" (For more search syntax, refer to [Core API - Search Filters](http://developer.factual.com/display/docs/Core+API+-+Search+Filters))
     query = query.search("sushi", "sashimi")
 
-    # 4. Filter by Geo (For more geo syntax, refer to )
+    # 4. Filter by Geo (For more geo syntax, refer to [Core API - Geo Filters](http://developer.factual.com/display/docs/Core+API+-+Geo+Filters))
     query = query.geo("$circle" => {"$center" => [34.06021, -118.41828], "$meters" => 5000})
 
     # 5. Sort it 
