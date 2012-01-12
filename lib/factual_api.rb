@@ -195,13 +195,13 @@ module Factual
     private
 
     def read_response
-      if @read_response
-        return @read_response
-      else
+      unless @read_response
         # always include count for reads
         @params[:include_count] = true
-        return response(@action || :read)
+        @read_response = response(@action || :read)
       end
+
+      return @read_response
     end
 
     def check_params!(action)
