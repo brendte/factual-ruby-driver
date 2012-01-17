@@ -11,29 +11,52 @@ module Factual
       @access_token = access_token
     end
 
-    def request(path, params)
+    def data(query)
+      handle_request(query.action || :read, query.path, query.params)["data"]
+    end
+
+    def total_rows(query)
+      handle_request(query.action || :read, query.path, query.params)["total_row_count"]
+    end
+
+    def schema(query)
+      handle_request(:schema, query.path, query.params)["view"]
+    end
+
+    private
+
+    def handle_request(action, path, params)
+      params[:include_count] = true
+      response = make_request(path, params)
+
+      json    = response.body
+      payload = JSON.parse(json)
+      raise StandardError.new(payload["message"]) unless payload["status"] == "ok"
+
+      payload["response"]
+    end
+
+    def make_request(path, params)
       url     = "#{API_V3_HOST}/#{path}?#{query_string(params)}"
       headers = { "X-Factual-Lib" => DRIVER_VERSION_TAG }
 
       @access_token.get(url, headers)
     end
 
-    private
-
     def query_string(params)
-      arr = []
-      params.each do |key, value|
+      query_array = params.keys.inject([]) do |array, key|
         param_alias = PARAM_ALIASES[key.to_sym] || key.to_sym
-
-        value = value.to_json if value.class == Hash
-        arr << "#{param_alias}=#{URI.escape(value.to_s)}"
+        value = params[key].class == Hash ? params[key].to_json : params[key].to_s
+        array << "#{param_alias}=#{URI.escape(value)}"
       end
 
-      arr.join("&")
+      query_array.join("&")
     end
   end
 
   class Query
+    include Enumerable
+
     DEFAULT_LIMIT = 20
     VALID_PARAMS = {
       :read      => [ :filters, :search, :geo, :sort, :select, :limit, :offset ],
@@ -48,27 +71,46 @@ module Factual
       @action = action
       @path = path
       @params = params
+      @data = nil
+      @count = nil
+      check_params
     end
 
-    def first
-      read_response["data"].first
+    # Attribute Readers
+    [:action, :path, :params].each do |attribute|
+      define_method(attribute) do
+        instance_variable_get("@#{attribute}").clone
+      end
+    end
+
+    # Response Methods
+    def each(&block)
+      all.each { |row| block.call(row) }
+    end
+
+    def last
+      all.last
+    end
+
+    def [](index)
+      all[index]
     end
 
     def all
-      read_response["data"]
+      @data ||= @api.data(self)
     end
 
-    def count
-      read_response["total_row_count"]
+    def total_rows
+      @total_rows ||= @api.total_rows(self)
     end
 
     def schema
-      unless @schema_response
-        @path  += "/schema"
-        @schema_response = response(:schema)
+      unless @schema
+        query = Query.new(@api, @action, @path + "/schema", @params)
+        @schema = @api.schema(query)
       end
 
-      @schema_response["view"]
+      @schema
     end
 
     # Query Modifiers
@@ -88,6 +130,7 @@ module Factual
 
       new_params = @params.clone
       new_params[:sort] = columns.join(',')
+
       Query.new(@api, @action, @path, new_params)
     end
 
@@ -107,36 +150,12 @@ module Factual
 
     private
 
-    def read_response
-      unless @read_response
-        @params[:include_count] = true
-        @read_response = response(@action || :read)
-      end
-
-      @read_response
-    end
-
-    def check_params!(action)
+    # Validations
+    def check_params
       @params.each do |param, val|
-        unless (VALID_PARAMS[action] + VALID_PARAMS[:any]).include?(param)
-          raise StandardError.new("InvalidArgument #{param} for #{action}")
+        unless (VALID_PARAMS[@action] + VALID_PARAMS[:any]).include?(param)
+          raise StandardError.new("InvalidArgument #{param} for #{@action}")
         end
-      end
-    end
-
-    def response(action)
-      check_params!(action)
-
-      res = @api.request(@path, @params)
-
-      code    = res.code
-      json    = res.body
-      payload = JSON.parse(json)
-
-      if payload["status"] == "ok"
-        return payload["response"]
-      else
-        raise StandardError.new(payload["message"])
       end
     end
   end
