@@ -54,11 +54,11 @@ module Factual
       read_response["data"].first
     end
 
-    def rows
+    def all
       read_response["data"]
     end
 
-    def total_count
+    def count
       read_response["total_row_count"]
     end
 
@@ -71,12 +71,14 @@ module Factual
       @schema_response["view"]
     end
 
+    # Query Modifiers
     VALID_PARAMS.values.flatten.uniq.each do |param|
-      define_method(param) do |*args|
-        val = (args.length == 1) ? args.first : args.join(',')
+      define_method("#{param}=") do |*args|
+        value = args.length == 1 ? args.first.strip : args.map(&:strip).join(',')
 
         new_params = @params.clone
-        new_params[param] = val
+        new_params[param] = value
+
         Query.new(@api, @action, @path, new_params)
       end
     end
@@ -89,17 +91,17 @@ module Factual
       Query.new(@api, @action, @path, new_params)
     end
 
-    def page(page_num, paging_opts = {})
-      limit = (paging_opts[:per] || paging_opts["per"]).to_i
+    def page(page_number, paging_options = {})
+      limit = (paging_options[:per] || paging_options["per"] || DEFAULT_LIMIT).to_i
       limit = DEFAULT_LIMIT if limit < 1
 
-      page_num = page_num.to_i
-      page_num = 1 if page_num < 1
-      offset   = (page_num - 1) * limit
+      page_number = page_number.to_i
+      page_number = 1 if page_number < 1
 
       new_params = @params.clone
-      new_params[:limit]  = limit
-      new_params[:offset] = offset
+      new_params[:limit] = limit
+      new_params[:offset] = (page_number - 1) * limit
+
       Query.new(@api, @action, @path, new_params)
     end
 
