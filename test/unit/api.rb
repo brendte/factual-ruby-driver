@@ -14,31 +14,31 @@ class ApiTest < Test::Unit::TestCase
   def test_first
     # basic
     row = @api.table(:global).first
-    assert_equal row.factual_id.length, 36
+    assert_equal row["factual_id"].length, 36
 
     # search
     row = @api.table(:global).search('factual').first
-    assert_match /Factual/, row.name 
+    assert_match /Factual/, row["name"]
 
   end
 
   def test_sort
     row = @api.table(:global).sort(:country, :name).first
-    assert_match /^100/, row.name
+    assert_match /^100/, row["name"]
     row = @api.table(:global).sort(:name).first
-    assert_match /^\!/, row.name
+    assert_match /^\!/, row["name"]
 
     row = @api.table(:global).sort_desc(:country, :name).first
-    assert_match /^Z/, row.name
+    assert_match /^Z/, row["name"]
     row = @api.table(:global).sort_desc(:name).first
-    assert_equal 'hk', row.country
+    assert_equal 'hk', row["country"]
   end
 
   def test_paging
     row = @api.table(:global).offset(10).limit(10).first
-    assert_equal 'Ciber 26', row.name
+    assert_match /El Bunker/, row["name"]
     row = @api.table(:global).page(2, :per => 10).first
-    assert_equal 'Ciber 26', row.name
+    assert_match /El Bunker/, row["name"]
   end
 
   def test_rows
@@ -52,7 +52,7 @@ class ApiTest < Test::Unit::TestCase
     # search
     query = @api.table(:global).search('factual')
     query.rows.each do |row|
-      assert_match /Factual/, row.name 
+      assert_match /Factual/, row["name"] 
     end
   end
 
@@ -60,37 +60,34 @@ class ApiTest < Test::Unit::TestCase
     query1 = @api.table(:global).search('factual')
     query2 = query1.filters(:locality => 'los angeles')
 
-    assert_no_match /stars/i, query1.first.address
-    assert_match /stars/i, query2.first.address
+    assert_no_match /stars/i, query1.first["address"]
+    assert_match /stars/i, query2.first["address"]
   end
 
   def test_format
-    query = @api.table(:global, :json)
-    assert_equal query.first.class, Hash
+    query = @api.table(:global)
+    json  = query.first.to_json
+    assert_equal json.class, String
 
-    assert_equal @api.table(:global).first.class, Factual::Row
+    hash = query.first
+    assert_equal hash.class, Hash
   end
 
   def test_crosswalk
     query = @api.crosswalk(FACTUAL_ID)
 
-    assert_equal query.first.namespace, 'facebook'
+    assert_equal query.first["namespace"], 'facebook'
   end
 
   def test_resolve
     query = @api.resolve(:name => 'factual inc', :region => 'ca')
 
-    assert query.first.resolved
-    assert_match /stars/i, query.first.address
-  end
-
-  def test_facets
-    query = @api.table(:global).select(:region, :locality).search('factual').min_count(2)
-    assert_equal query.facets().region.length, 8
+    assert query.first["resolved"]
+    assert_match /stars/i, query.first["address"]
   end
 
   def test_schema
     schema = @api.table(:global).schema()
-    assert_equal schema.fields.length, 21
+    assert_equal schema["fields"].length, 21
   end
 end

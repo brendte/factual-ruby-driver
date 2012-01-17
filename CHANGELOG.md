@@ -1,3 +1,8 @@
+## v0.3
+* return hash instead of objects
+* removing facets
+* a little refactoring
+
 ## v0.2
 * refactoring
 

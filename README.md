@@ -37,7 +37,7 @@ This is the Factual supported Ruby driver for [Factual's public API](http://deve
     # 6. Page it
     query = query.page(2, :per => 10)
 
-    # 7. Finally, get response in Factual::Row objects
+    # 7. Finally, get response in a hash or array of hashes
     query.first    # return one row
     query.rows     # return many rows
 
@@ -56,7 +56,7 @@ This is the Factual supported Ruby driver for [Factual's public API](http://deve
 
 ## Resolve
 
-    # Returns resolved entities as Factual::Row objects
+    # Returns resolved entities as an array of hashes
     query = factual.resolve("name" => "McDonalds",
                     "address" => "10451 Santa Monica Blvd",
                     "region" => "CA",
@@ -67,11 +67,5 @@ This is the Factual supported Ruby driver for [Factual's public API](http://deve
 
 ## Schema
 
-    # Returns a Factual::Table object whose fields are an array of Factual::Field objects
-    factual.table("global").schema()
-
-## Facets
-
-    # Returns number of starbucks in regions thoughout the world
-    factual.table("global").select("country", "region").search("starbucks").min_count(2).facets()
-
+    # Returns a hash of table metadata, including an array of fields
+    factual.table("global").schema

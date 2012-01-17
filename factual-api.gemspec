@@ -4,9 +4,9 @@ $:.unshift lib unless $:.include?(lib)
  
 Gem::Specification.new do |s|
   s.name        = "factual-api"
-  s.version     =  "0.2"
+  s.version     =  "0.3"
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Forrest Cao", "Aaron Crow"]
+  s.authors     = ["Rudiger Lippert", "Forrest Cao", "Aaron Crow"]
   s.email       = ["aaron@factual.com"]
   s.homepage    = "http://github.com/Factual/factual-ruby-driver"
   s.summary     = "Ruby driver for Factual"
