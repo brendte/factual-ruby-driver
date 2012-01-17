@@ -10,29 +10,28 @@ class Factual
   # Initializes authentication to the Factual API.
   # Must specify a valid developer key and secret.
   def initialize(key, secret)
-    @access_token = OAuth::AccessToken.new(
-    OAuth::Consumer.new(key, secret))
+    @access_token = OAuth::AccessToken.new(OAuth::Consumer.new(key, secret))
   end
-  
+
   # Executes a read request against Factual, including all supported
   # query parameters such as limit, offset, full text search, and row filters.
   def find(table, query)
-    return get("t/#{table}", query)
+    get("t/#{table}", query)
   end
 
   # Executes a Crosswalk request against Factual.
   def crosswalk(table, query)
-    return get("#{table}/crosswalk", query)
+    get("#{table}/crosswalk", query)
   end
 
   # Executes a Resolve request against Factual.
   def resolve(table, values)
-    return get("#{table}/resolve", {:values => values})
+    get("#{table}/resolve", {:values => values})
   end
 
   # Executes a Crossref request against Factual.
   def crossref(table, query)
-    return get("#{table}/crossref", query)
+    get("#{table}/crossref", query)
   end
 
   private
@@ -47,9 +46,8 @@ class Factual
   end
 
   def get(path, query)
-    return @access_token.get(
+    @access_token.get(
     "#{HOME}/#{path}?#{query_string(query)}",
     {"X-Factual-Lib" => DRIVER_VERSION_TAG})
   end
-
 end

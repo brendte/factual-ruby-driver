@@ -9,15 +9,12 @@ module Factual
     DRIVER_VERSION_TAG = "factual-ruby-driver-1.0"
     PARAM_ALIASES      = { :search => :q }
 
-    # initializers
-    # ----------------
+    # initializer
     def initialize(key, secret)
-      @access_token = OAuth::AccessToken.new(
-        OAuth::Consumer.new(key, secret))
+      @access_token = OAuth::AccessToken.new(OAuth::Consumer.new(key, secret))
     end
 
     # actions
-    # ----------------
     def crosswalk(factual_id)
       Query.new(
           :api    => self,
@@ -43,7 +40,6 @@ module Factual
     end
 
     # requesting
-    # ----------------
     def request(path, params)
       url     = "#{API_V3_HOST}/#{path}?#{query_string(params)}"
       headers = {"X-Factual-Lib" => DRIVER_VERSION_TAG}
@@ -80,8 +76,7 @@ module Factual
       :any       => [ :include_count ]
     }
 
-    # initializers
-    # ----------------
+    # initializer
     def initialize(options)
       @api    = options[:api]
       @action = options[:action]
@@ -99,9 +94,7 @@ module Factual
     end
 
     # helper functions
-    # ----------------
     # attributes, after 'get'
-    # ----------------
     def first
       read_response["data"].first
     end
@@ -125,7 +118,6 @@ module Factual
     end
 
     # query builder, returns immutable ojbects
-    # ----------------
     VALID_PARAMS.values.flatten.uniq.each do |param|
       define_method(param) do |*args|
         val = (args.length == 1) ? args.first : args.join(',')
@@ -136,8 +128,7 @@ module Factual
       end
     end
 
-    # sugers
-    # ----------------
+    # sugar
     def sort_desc(*args)
       columns = args.collect{ |col|"#{col}:desc" }
 
@@ -161,7 +152,6 @@ module Factual
     end
 
     # requesting
-    # ----------------
     private
 
     def read_response
@@ -197,6 +187,5 @@ module Factual
         raise StandardError.new(payload["message"])
       end
     end
-
   end
 end
