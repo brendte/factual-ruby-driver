@@ -1,48 +1,19 @@
-require 'oauth'
 require 'json'
 require 'uri'
-require 'ostruct'
 
 module Factual
-  class Api
+  class API
     API_V3_HOST        = "http://api.v3.factual.com"
     DRIVER_VERSION_TAG = "factual-ruby-driver-1.0"
     PARAM_ALIASES      = { :search => :q }
 
-    # initializer
-    def initialize(key, secret)
-      @access_token = OAuth::AccessToken.new(OAuth::Consumer.new(key, secret))
+    def initialize(access_token)
+      @access_token = access_token
     end
 
-    # actions
-    def crosswalk(factual_id)
-      Query.new(
-          :api    => self,
-          :action => :crosswalk,
-          :path   => "places/crosswalk",
-          :params => { :factual_id => factual_id })
-    end
-
-    def resolve(values)
-      Query.new(
-          :api    => self,
-          :action => :resolve,
-          :path   => "places/resolve",
-          :params => { :values => values })
-    end
-
-    def table(table_id_or_alias)
-      Query.new(
-          :api    => self,
-          :action => :read,
-          :path   => "t/#{table_id_or_alias}",
-          :params => Hash.new)
-    end
-
-    # requesting
     def request(path, params)
       url     = "#{API_V3_HOST}/#{path}?#{query_string(params)}"
-      headers = {"X-Factual-Lib" => DRIVER_VERSION_TAG}
+      headers = { "X-Factual-Lib" => DRIVER_VERSION_TAG }
 
       @access_token.get(url, headers)
     end
@@ -51,23 +22,19 @@ module Factual
 
     def query_string(params)
       arr = []
-      params.each do |param, v|
-        param_alias = PARAM_ALIASES[param.to_sym] || param.to_sym
+      params.each do |key, value|
+        param_alias = PARAM_ALIASES[key.to_sym] || key.to_sym
 
-        v = v.to_json if v.class == Hash
-        arr << "#{param_alias}=#{URI.escape(v.to_s)}"
+        value = value.to_json if value.class == Hash
+        arr << "#{param_alias}=#{URI.escape(value.to_s)}"
       end
 
       arr.join("&")
     end
-
   end
 
   class Query
-
-    # helper functions
     DEFAULT_LIMIT = 20
-
     VALID_PARAMS = {
       :read      => [ :filters, :search, :geo, :sort, :select, :limit, :offset ],
       :resolve   => [ :values ],
@@ -76,25 +43,13 @@ module Factual
       :any       => [ :include_count ]
     }
 
-    # initializer
-    def initialize(options)
-      @api    = options[:api]
-      @action = options[:action]
-      @path   = options[:path]
-      @params = options[:params]
+    def initialize(api, action, path, params = {})
+      @api = api
+      @action = action
+      @path = path
+      @params = params
     end
 
-    def get_options
-      {
-        :api    => @api,
-        :action => @action,
-        :path   => @path,
-        :params => @params.clone
-      }
-    end
-
-    # helper functions
-    # attributes, after 'get'
     def first
       read_response["data"].first
     end
@@ -107,7 +62,6 @@ module Factual
       read_response["total_row_count"]
     end
 
-
     def schema
       unless @schema_response
         @path  += "/schema"
@@ -117,24 +71,22 @@ module Factual
       @schema_response["view"]
     end
 
-    # query builder, returns immutable ojbects
     VALID_PARAMS.values.flatten.uniq.each do |param|
       define_method(param) do |*args|
         val = (args.length == 1) ? args.first : args.join(',')
 
-        options = self.get_options
-        options[:params][param] = val
-        Query.new(options)
+        new_params = @params.clone
+        new_params[param] = val
+        Query.new(@api, @action, @path, new_params)
       end
     end
 
-    # sugar
     def sort_desc(*args)
-      columns = args.collect{ |col|"#{col}:desc" }
+      columns = args.map { |column| "#{column}:desc" }
 
-      options = self.get_options
-      options[:params][:sort] = columns.join(',')
-      Query.new(options)
+      new_params = @params.clone
+      new_params[:sort] = columns.join(',')
+      Query.new(@api, @action, @path, new_params)
     end
 
     def page(page_num, paging_opts = {})
@@ -145,18 +97,16 @@ module Factual
       page_num = 1 if page_num < 1
       offset   = (page_num - 1) * limit
 
-      options = self.get_options
-      options[:params][:limit]  = limit
-      options[:params][:offset] = offset
-      Query.new(options)
+      new_params = @params.clone
+      new_params[:limit]  = limit
+      new_params[:offset] = offset
+      Query.new(@api, @action, @path, new_params)
     end
 
-    # requesting
     private
 
     def read_response
       unless @read_response
-        # always include count for reads
         @params[:include_count] = true
         @read_response = response(@action || :read)
       end
