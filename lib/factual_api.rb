@@ -28,9 +28,9 @@ module Factual
     def handle_request(action, path, params)
       params[:include_count] = true
       response = make_request(path, params)
-
       json    = response.body
       payload = JSON.parse(json)
+
       raise StandardError.new(payload["message"]) unless payload["status"] == "ok"
 
       payload["response"]
@@ -72,8 +72,9 @@ module Factual
       @path = path
       @params = params
       @data = nil
-      @count = nil
-      check_params
+      @total_rows = nil
+      @schema = nil
+      validate_params
     end
 
     # Attribute Readers
@@ -97,11 +98,11 @@ module Factual
     end
 
     def all
-      @data ||= @api.data(self)
+      (@data ||= @api.data(self)).clone
     end
 
     def total_rows
-      @total_rows ||= @api.total_rows(self)
+      (@total_rows ||= @api.total_rows(self)).clone
     end
 
     def schema
@@ -110,7 +111,7 @@ module Factual
         @schema = @api.schema(query)
       end
 
-      @schema
+      @schema.clone
     end
 
     # Query Modifiers
@@ -151,7 +152,7 @@ module Factual
     private
 
     # Validations
-    def check_params
+    def validate_params
       @params.each do |param, val|
         unless (VALID_PARAMS[@action] + VALID_PARAMS[:any]).include?(param)
           raise StandardError.new("InvalidArgument #{param} for #{@action}")
