@@ -12,7 +12,8 @@ module Factual
     end
 
     def execute(query)
-      handle_request(query.action || :read, query.path, query.params)
+      params_with_count = query.params.merge(:include_count => true)
+      handle_request(query.action || :read, query.path, params_with_count)
     end
 
     def schema(query)
@@ -22,7 +23,6 @@ module Factual
     private
 
     def handle_request(action, path, params)
-      params[:include_count] = true
       response = make_request(path, params)
       json    = response.body
       payload = JSON.parse(json)
