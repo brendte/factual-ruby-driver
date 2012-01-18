@@ -81,18 +81,18 @@ module Factual
 
     # Response Methods
     def each(&block)
-      all.each { |row| block.call(row) }
+      rows.each { |row| block.call(row) }
     end
 
     def last
-      all.last
+      rows.last
     end
 
     def [](index)
-      all[index]
+      rows[index]
     end
 
-    def all
+    def rows
       (@response ||= @api.execute(self))["data"].clone
     end
 
