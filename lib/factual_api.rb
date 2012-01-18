@@ -116,7 +116,7 @@ module Factual
 
     # Query Modifiers
     VALID_PARAMS.values.flatten.uniq.each do |param|
-      define_method("#{param}=") do |*args|
+      define_method(param) do |*args|
         value = args.length == 1 ? args.first.strip : args.map(&:strip).join(',')
 
         new_params = @params.clone
