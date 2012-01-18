@@ -16,7 +16,7 @@ module Factual
     end
 
     def schema(query)
-      handle_request(:schema, query.path, query.params)["view"]
+      handle_request(:schema, query.path + "/schema", query.params)["view"]
     end
 
     private
@@ -101,12 +101,7 @@ module Factual
     end
 
     def schema
-      unless @schema
-        query = Query.new(@api, @action, @path + "/schema", @params)
-        @schema = @api.schema(query)
-      end
-
-      @schema.clone
+      (@schema ||= @api.schema(self)).clone
     end
 
     # Query Modifiers
