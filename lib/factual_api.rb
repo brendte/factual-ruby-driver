@@ -11,12 +11,8 @@ module Factual
       @access_token = access_token
     end
 
-    def data(query)
-      handle_request(query.action || :read, query.path, query.params)["data"]
-    end
-
-    def total_rows(query)
-      handle_request(query.action || :read, query.path, query.params)["total_row_count"]
+    def execute(query)
+      handle_request(query.action || :read, query.path, query.params)
     end
 
     def schema(query)
@@ -71,8 +67,7 @@ module Factual
       @action = action
       @path = path
       @params = params
-      @data = nil
-      @total_rows = nil
+      @response = nil
       @schema = nil
       validate_params
     end
@@ -98,11 +93,11 @@ module Factual
     end
 
     def all
-      (@data ||= @api.data(self)).clone
+      (@response ||= @api.execute(self))["data"].clone
     end
 
     def total_rows
-      (@total_rows ||= @api.total_rows(self)).clone
+      (@response ||= @api.execute(self))["total_row_count"].clone
     end
 
     def schema
