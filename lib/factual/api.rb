@@ -1,7 +1,7 @@
 require 'json'
 require 'uri'
 
-class Factual
+module Factual
   class API
     API_V3_HOST        = "http://api.v3.factual.com"
     DRIVER_VERSION_TAG = "factual-ruby-driver-1.0"

@@ -1,4 +1,4 @@
-class Factual
+module Factual
   class Query
     include Enumerable
 

@@ -8,15 +8,15 @@ class Factual
   end
 
   def crosswalk(factual_id)
-    Query.new(@api, :crosswalk, "places/crosswalk", :factual_id => factual_id)
+    Factual::Query.new(@api, :crosswalk, "places/crosswalk", :factual_id => factual_id)
   end
 
   def resolve(values)
-    Query.new(@api, :resolve, "places/resolve", :values => values)
+    Factual::Query.new(@api, :resolve, "places/resolve", :values => values)
   end
 
   def table(table_id_or_alias)
-    Query.new(@api, :read, "t/#{table_id_or_alias}")
+    Factual::Query.new(@api, :read, "t/#{table_id_or_alias}")
   end
 
   private
