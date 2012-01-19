@@ -21,14 +21,7 @@ class Factual
       validate_params
     end
 
-    # Attribute Readers
-    attr_reader :action
-
-    [:path, :params].each do |attribute|
-      define_method(attribute) do
-        instance_variable_get("@#{attribute}").clone
-      end
-    end
+    attr_reader :action, :path, :params
 
     # Response Methods
     def each(&block)
@@ -44,11 +37,11 @@ class Factual
     end
 
     def rows
-      (@response ||= @api.execute(self))["data"].clone
+      response["data"]
     end
 
     def total_rows
-      (@response ||= @api.execute(self))["total_row_count"]
+      response["total_row_count"]
     end
 
     def schema
@@ -58,7 +51,7 @@ class Factual
     # Query Modifiers
     VALID_PARAMS.values.flatten.uniq.each do |param|
       define_method(param) do |*args|
-        args  = args.collect{|arg| arg.is_a?(String) ? arg.strip : arg }
+        args  = args.map { |arg| arg.is_a?(String) ? arg.strip : arg }
         value = (args.length == 1) ? args.first : args.join(',')
 
         new_params = @params.clone
@@ -92,6 +85,10 @@ class Factual
     end
 
     private
+
+    def response
+      @response ||= @api.execute(self)
+    end
 
     # Validations
     def validate_params
