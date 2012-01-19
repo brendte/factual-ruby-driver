@@ -6,8 +6,8 @@ Gem::Specification.new do |s|
   s.name        = "factual-api"
   s.version     =  "0.5"
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Rudiger Lippert", "Forrest Cao", "Aaron Crow"]
-  s.email       = ["aaron@factual.com"]
+  s.authors     = ["Rudiger Lippert", "Forrest Cao"]
+  s.email       = ["rudy@factual.com", "forrest@factual.com"]
   s.homepage    = "http://github.com/Factual/factual-ruby-driver"
   s.summary     = "Ruby driver for Factual"
   s.description = "Factual's official Ruby driver for the Factual public API."
