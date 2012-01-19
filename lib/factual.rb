@@ -1,4 +1,6 @@
 require 'oauth'
+require 'factual/api'
+require 'factual/query'
 
 class Factual
   def initialize(key, secret)

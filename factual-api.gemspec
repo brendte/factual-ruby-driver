@@ -4,7 +4,7 @@ $:.unshift lib unless $:.include?(lib)
 
 Gem::Specification.new do |s|
   s.name        = "factual-api"
-  s.version     =  "0.3"
+  s.version     =  "0.5"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Rudiger Lippert", "Forrest Cao", "Aaron Crow"]
   s.email       = ["aaron@factual.com"]
@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.description = "Factual's official Ruby driver for the Factual public API."
   s.required_rubygems_version = ">= 1.3.6"
   s.add_development_dependency "rspec"
-  s.files        = Dir["#{lib}/**/*.rb"] + %w(README.md CHANGELOG.md)
+  s.files        = Dir["lib/**/*.rb"] + %w(README.md CHANGELOG.md)
   s.executables  = []
   s.require_path = 'lib'
 end

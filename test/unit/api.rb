@@ -1,7 +1,5 @@
 require 'test/unit'
 require './lib/factual'
-require './lib/factual/api'
-require './lib/factual/query'
 
 require File.expand_path(File.dirname(__FILE__)) + '/my_key_pair'
 

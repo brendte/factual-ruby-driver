@@ -5,8 +5,8 @@ This is the Factual supported Ruby driver for [Factual's public API](http://deve
 # Installation
 
     gem 'factual-api'
-    require 'factual_api'
-    factual = Factual::Api.new(YOUR_KEY, YOUR_SECRET)
+    require 'factual'
+    factual = Factual.new(YOUR_KEY, YOUR_SECRET)
   
 # Examples
 
@@ -62,8 +62,8 @@ This is the Factual supported Ruby driver for [Factual's public API](http://deve
                     "region" => "CA",
                     "postcode" => "90025")
 
-    query.first.resolved # true or false
-    query.rows           # resolved rows
+    query.first["resolved"]   # true or false
+    query.rows                # all candidate rows
 
 ## Schema
 

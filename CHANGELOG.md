@@ -1,3 +1,7 @@
+## v0.5
+* big refactoring from Rudy
+* ready for releasing
+
 ## v0.3
 * return hash instead of objects
 * removing facets
