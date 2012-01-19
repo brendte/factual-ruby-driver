@@ -1,4 +1,4 @@
-module Factual
+class Factual
   class Query
     include Enumerable
 
@@ -22,7 +22,9 @@ module Factual
     end
 
     # Attribute Readers
-    [:action, :path, :params].each do |attribute|
+    attr_reader :action
+
+    [:path, :params].each do |attribute|
       define_method(attribute) do
         instance_variable_get("@#{attribute}").clone
       end
@@ -46,7 +48,7 @@ module Factual
     end
 
     def total_rows
-      (@response ||= @api.execute(self))["total_row_count"].clone
+      (@response ||= @api.execute(self))["total_row_count"]
     end
 
     def schema
@@ -56,7 +58,8 @@ module Factual
     # Query Modifiers
     VALID_PARAMS.values.flatten.uniq.each do |param|
       define_method(param) do |*args|
-        value = args.length == 1 ? args.first.strip : args.map(&:strip).join(',')
+        args  = args.collect{|arg| arg.is_a?(String) ? arg.strip : arg }
+        value = (args.length == 1) ? args.first : args.join(',')
 
         new_params = @params.clone
         new_params[param] = value

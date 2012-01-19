@@ -1,5 +1,8 @@
 require 'test/unit'
-require './lib/factual_api'
+require './lib/factual'
+require './lib/factual/api'
+require './lib/factual/query'
+
 require File.expand_path(File.dirname(__FILE__)) + '/my_key_pair'
 
 class ApiTest < Test::Unit::TestCase
@@ -8,7 +11,7 @@ class ApiTest < Test::Unit::TestCase
   FACTUAL_ID = "03c26917-5d66-4de9-96bc-b13066173c65"
    
   def setup
-    @api = Factual::Api.new( FACTUAL_OAUTH_KEY, FACTUAL_OAUTH_SECRET )
+    @api = Factual.new( FACTUAL_OAUTH_KEY, FACTUAL_OAUTH_SECRET )
   end
 
   def test_first
@@ -45,8 +48,8 @@ class ApiTest < Test::Unit::TestCase
     # basic
     query = @api.table(:global)
     rows = query.rows
-    total_count = query.total_count
-    assert (total_count > 55_000_000)
+    total_rows = query.total_rows
+    assert (total_rows > 55_000_000)
     assert_equal rows.length, 20
 
     # search
