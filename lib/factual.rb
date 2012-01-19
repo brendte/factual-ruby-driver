@@ -1,22 +1,24 @@
 require 'oauth'
 require 'factual/api'
-require 'factual/query'
+require 'factual/query/table'
+require 'factual/query/resolve'
+require 'factual/query/crosswalk'
 
 class Factual
   def initialize(key, secret)
     @api = Factual::API.new(generate_token(key, secret))
   end
 
+  def table(table_id_or_alias)
+    Factual::Query::Table.new(@api, "t/#{table_id_or_alias}")
+  end
+
   def crosswalk(factual_id)
-    Factual::Query.new(@api, :crosswalk, "places/crosswalk", :factual_id => factual_id)
+    Factual::Query::Crosswalk.new(@api, :factual_id => factual_id)
   end
 
   def resolve(values)
-    Factual::Query.new(@api, :resolve, "places/resolve", :values => values)
-  end
-
-  def table(table_id_or_alias)
-    Factual::Query.new(@api, :read, "t/#{table_id_or_alias}")
+    Factual::Query::Resolve.new(@api, :values => values)
   end
 
   private

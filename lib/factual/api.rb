@@ -23,17 +23,13 @@ module Factual
     private
 
     def handle_request(action, path, params)
-      response = make_request(path, params)
-      json    = response.body
-      payload = JSON.parse(json)
-
+      payload = JSON.parse(make_request(path, params).body)
       raise StandardError.new(payload["message"]) unless payload["status"] == "ok"
-
       payload["response"]
     end
 
     def make_request(path, params)
-      url     = "#{API_V3_HOST}/#{path}?#{query_string(params)}"
+      url = "#{API_V3_HOST}/#{path}?#{query_string(params)}"
       headers = { "X-Factual-Lib" => DRIVER_VERSION_TAG }
 
       @access_token.get(url, headers)
