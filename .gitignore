@@ -1,0 +1,3 @@
+test/unit/my_key_pair.rb
+*.gem
+*.swp
