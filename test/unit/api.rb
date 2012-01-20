@@ -1,5 +1,7 @@
+$LOAD_PATH << './lib'
+
 require 'test/unit'
-require './lib/factual'
+require 'factual'
 
 require File.expand_path(File.dirname(__FILE__)) + '/my_key_pair'
 
