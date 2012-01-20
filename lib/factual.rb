@@ -6,19 +6,19 @@ require 'factual/query/crosswalk'
 
 class Factual
   def initialize(key, secret)
-    @api = Factual::API.new(generate_token(key, secret))
+    @api = API.new(generate_token(key, secret))
   end
 
   def table(table_id_or_alias)
-    Factual::Query::Table.new(@api, "t/#{table_id_or_alias}")
+    Query::Table.new(@api, "t/#{table_id_or_alias}")
   end
 
   def crosswalk(factual_id)
-    Factual::Query::Crosswalk.new(@api, :factual_id => factual_id)
+    Query::Crosswalk.new(@api, :factual_id => factual_id)
   end
 
   def resolve(values)
-    Factual::Query::Resolve.new(@api, :values => values)
+    Query::Resolve.new(@api, :values => values)
   end
 
   private

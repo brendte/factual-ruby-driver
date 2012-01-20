@@ -1,8 +1,8 @@
-require 'factual/query'
+require 'factual/query/base'
 
-module Factual
+class Factual
   module Query
-    class Crosswalk < Factual::Query
+    class Crosswalk < Base
       def initialize(api, params = {})
         @path = "places/crosswalk"
         @action = :crosswalk

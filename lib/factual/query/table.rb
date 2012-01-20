@@ -1,8 +1,8 @@
-require 'factual/query'
+require 'factual/query/base'
 
-module Factual
+class Factual
   module Query
-    class Table < Factual::Query
+    class Table < Base
       DEFAULT_LIMIT = 20
 
       def initialize(api, path, params = {})
