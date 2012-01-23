@@ -4,9 +4,23 @@ This is the Factual supported Ruby driver for [Factual's public API](http://deve
 
 # Installation
 
-    gem 'factual-api'
-    require 'factual'
-    factual = Factual.new(YOUR_KEY, YOUR_SECRET)
+The driver's gems are hosted at Rubygems.org. Make sure you're using the latest version of rubygems:
+
+````bash
+$ gem update --system
+````
+
+Then you can install the factual-api gem as follows:
+
+$ gem install factual-api
+
+Once the gem is installed, you can use it in your Ruby project like:
+
+````ruby
+gem 'factual-api'
+require 'factual'
+factual = Factual.new("YOUR_KEY", "YOUR_SECRET")
+````
   
 # Examples
 
