@@ -11,7 +11,17 @@ This API supports queries to Factual's Read, Schema, Crosswalk, and Resolve APIs
 
 This driver is supported via the [Factual Developer Group](https://groups.google.com/group/factual_developers)
 
-# Installation
+# Overview
+
+## Basic Design
+
+The driver allows you to create an authenticated handle to Factual. With a Factual handle, you can send queries and get results back.
+
+Queries are created using the Factual handle, which provides a fluent interface to constructing your queries. 
+
+Results are returned as Ruby Arrays of Hashes, where each Hash is a result record.
+
+## Setup
 
 The driver's gems are hosted at [Rubygems.org](http://rubygems.org). Make sure you're using the latest version of rubygems:
 
@@ -33,14 +43,14 @@ require 'factual'
 factual = Factual.new("YOUR_KEY", "YOUR_SECRET")
 ````
   
-# Examples
-
-## Quick Sample 
+## Simple Query Example
 
 `````ruby
-# Returns Places with names beginning with "Star"
+# Returns records from the Places dataset with names beginning with "Star"
 factual.table("places").filters("name" => {"$bw" => "Star"}).rows
 `````
+
+# Read API
 
 ## Read (with all features)
 
