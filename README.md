@@ -1,10 +1,19 @@
-# Introduction
+# About
 
 This is the Factual supported Ruby driver for [Factual's public API](http://developer.factual.com/display/docs/Factual+Developer+APIs+Version+3).
 
+This API supports queries to Factual's Read, Schema, Crosswalk, and Resolve APIs. Full documentation is available on the Factual website:
+
+*   [Read](http://developer.factual.com/display/docs/Factual+Developer+APIs+Version+3): Search the data
+*   [Schema](http://developer.factual.com/display/docs/Core+API+-+Schema): Get table metadata
+*   [Crosswalk](http://developer.factual.com/display/docs/Places+API+-+Crosswalk): Get third-party IDs
+*   [Resolve](http://developer.factual.com/display/docs/Places+API+-+Resolve): Enrich your data and match it against Factual's
+
+This driver is supported via the [Factual Developer Group](https://groups.google.com/group/factual_developers)
+
 # Installation
 
-The driver's gems are hosted at Rubygems.org. Make sure you're using the latest version of rubygems:
+The driver's gems are hosted at [Rubygems.org](http://rubygems.org). Make sure you're using the latest version of rubygems:
 
 ````bash
 $ gem update --system
@@ -12,7 +21,9 @@ $ gem update --system
 
 Then you can install the factual-api gem as follows:
 
+`````bash
 $ gem install factual-api
+`````
 
 Once the gem is installed, you can use it in your Ruby project like:
 
@@ -26,8 +37,10 @@ factual = Factual.new("YOUR_KEY", "YOUR_SECRET")
 
 ## Quick Sample 
 
-    # Returns Places with names beginning with "Star"
-    factual.table("places").filters("name" => {"$bw" => "Star"}).rows
+`````ruby
+# Returns Places with names beginning with "Star"
+factual.table("places").filters("name" => {"$bw" => "Star"}).rows
+`````
 
 ## Read (with all features)
 
