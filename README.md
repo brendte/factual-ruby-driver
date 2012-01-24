@@ -322,6 +322,42 @@ query = query.filters({ "$or" => [ {"$or" => [ {"name" => {"$bw" => "starbucks"}
                                                 {"tel" => {"$blank" => false}} ]} ]})
 ````
 
+# Crosswalk
+
+The driver fully supports Factual's Crosswalk feature, which lets you "crosswalk" the web and relate entities between Factual's data and that of other web authorities.
+
+(See [the Crosswalk Blog](http://blog.factual.com/crosswalk-api) for more background.)
+
+## Simple Crosswalk Example
+
+````ruby
+# Get all Crosswalk data for a Place with a specific FactualID
+factual.crosswalk("110ace9f-80a7-47d3-9170-e9317624ebd9").rows
+````
+
+# Resolve
+
+The driver fully supports Factual's Resolve feature, which lets you start with incomplete data you may have for an entity, and get potential entity matches back from Factual.
+
+Each result record will include a confidence score (<tt>"similarity"</tt>), and a flag indicating whether Factual decided the entity is the correct resolved match with a high degree of accuracy (<tt>"resolved"</tt>).
+
+For any Resolve query, there will be 0 or 1 entities returned with <tt>"resolved"=true</tt>. If there was a full match, it is guaranteed to be the first record in the response Array.
+
+(See [the Resolve Blog](http://blog.factual.com/factual-resolve) for more background.)
+
+## Simple Resolve Examples
+
+````ruby
+# Returns resolved entities as an array of hashes
+query = factual.resolve("name" => "McDonalds",
+                        "address" => "10451 Santa Monica Blvd",
+                        "region" => "CA",
+                        "postcode" => "90025")
+
+query.first["resolved"]   # true or false
+query.rows                # all candidate rows
+````
+
 # Geo Filters
 
 You can query Factual for entities located within a geographic area. For example:
