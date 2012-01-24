@@ -127,9 +127,12 @@ query.total_count
 ## All Top Level Query Parameters
 
 <table>
+  <col width="33%"/>
+  <col width="33%"/>
+  <col width="33%"/>
   <tr>
     <th>Parameter</th>
-    <th width="25%">Description</th>
+    <th>Description</th>
     <th>Example</th>
   </tr>
   <tr>
