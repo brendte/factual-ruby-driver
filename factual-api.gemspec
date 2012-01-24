@@ -4,7 +4,7 @@ $:.unshift lib unless $:.include?(lib)
 
 Gem::Specification.new do |s|
   s.name        = "factual-api"
-  s.version     =  "0.5"
+  s.version     =  "1.0.0"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Rudiger Lippert", "Forrest Cao"]
   s.email       = ["rudy@factual.com", "forrest@factual.com"]
