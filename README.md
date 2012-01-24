@@ -194,12 +194,12 @@ factual.table("places").filters("name" => {"$bw" => "starbucks"}).rows
   <tr>
     <td>$eq</td>
     <td>equal to</td>
-    <td><tt><td>query = query.filters("region" => {"$eq" => "CA"})</tt></td>
+    <td><tt>query = query.filters("region" => {"$eq" => "CA"})</tt></td>
   </tr>
   <tr>
     <td>$neq</td>
     <td>not equal to</td>
-    <td><tt><td>query = query.filters("region" => {"$neq" => "CA"})</tt></td>
+    <td><tt>query = query.filters("region" => {"$neq" => "CA"})</tt></td>
   </tr>
   <tr>
     <td>search</td>
@@ -209,12 +209,12 @@ factual.table("places").filters("name" => {"$bw" => "starbucks"}).rows
   <tr>
     <td>$in</td>
     <td>equals any of</td>
-    <td><tt><td>query = query.filters("region" => {"$in" => ["CA", "NM", "NY"]})</tt></td>
+    <td><tt>query = query.filters("region" => {"$in" => ["CA", "NM", "NY"]})</tt></td>
   </tr>
   <tr>
     <td>$nin</td>
     <td>does not equal any of</td>
-    <td><tt><td>query = query.filters("region" => {"$nin" => ["CA", "NM", "NY"]})</tt></td>
+    <td><tt>query = query.filters("region" => {"$nin" => ["CA", "NM", "NY"]})</tt></td>
   </tr>
   <tr>
     <td>$bw</td>
