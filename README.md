@@ -188,7 +188,7 @@ factual.table("places").filters("name" => {"$bw" => "starbucks"}).rows
 <table>
   <tr>
     <th>Predicate</th>
-    <th>Description</th>
+    <th width="25%">Description</th>
     <th>Example</th>
   </tr>
   <tr>
