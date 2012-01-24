@@ -14,6 +14,11 @@ class ApiTest < Test::Unit::TestCase
     @api = Factual.new( FACTUAL_OAUTH_KEY, FACTUAL_OAUTH_SECRET )
   end
 
+  def test_select
+    row = @api.table(:global).select(:name, :address).first
+    assert_equal row.keys.length, 2
+  end
+
   def test_first
     # basic
     row = @api.table(:global).first
@@ -26,9 +31,9 @@ class ApiTest < Test::Unit::TestCase
   end
 
   def test_sort
-    row = @api.table(:global).sort(:country, :name).first
+    row = @api.table(:global).sort_asc(:country, :name).first
     assert_match /^100/, row["name"]
-    row = @api.table(:global).sort(:name).first
+    row = @api.table(:global).sort_asc(:name).first
     assert_match /^\!/, row["name"]
 
     row = @api.table(:global).sort_desc(:country, :name).first
@@ -76,6 +81,11 @@ class ApiTest < Test::Unit::TestCase
     assert_equal hash.class, Hash
   end
 
+  def test_geo
+    query = @api.table(:global).geo("$circle" => {"$center" => [34.06021, -118.41828], "$meters" => 5000})
+    assert_equal query.first["name"], "Factual"
+  end
+
   def test_crosswalk
     query = @api.crosswalk(FACTUAL_ID)
 
@@ -83,7 +93,7 @@ class ApiTest < Test::Unit::TestCase
   end
 
   def test_resolve
-    query = @api.resolve(:name => 'factual inc', :region => 'ca')
+    query = @api.resolve(:name => 'factual inc', :locality => 'los angeles')
 
     assert query.first["resolved"]
     assert_match /stars/i, query.first["address"]

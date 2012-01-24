@@ -17,6 +17,11 @@ class Factual
         end
       end
 
+      def sort_asc(*args)
+        columns = args.map { |column| "#{column}" }
+        Table.new(@api, @path, @params.merge(:sort => columns.join(',')))
+      end
+
       def sort_desc(*args)
         columns = args.map { |column| "#{column}:desc" }
         Table.new(@api, @path, @params.merge(:sort => columns.join(',')))
