@@ -172,8 +172,8 @@ query.total_count
   <tr>
     <td>sort</td>
     <td>The field (or fields) to sort data on, as well as the direction of sort.  Supports $distance as a sort option if a geo-filter is specified.  Supports $relevance as a sort option if a full text search is specified either using the q parameter or using the $search operator in the filter parameter.  By default, any query with a full text search will be sorted by relevance.  Any query with a geo filter will be sorted by distance from the reference point.  If both a geo filter and full text search are present, the default will be relevance followed by distance.</td>
-    <td><tt>query = query.sort("name")</tt></td>
-    <td><tt>query = query.sort_desc("$distance")</tt></td>
+    <td><tt>query = query.sort("name")</tt><br>
+    <tt>query = query.sort_desc("$distance")</tt></td>
   </tr>
 </table>
 
