@@ -295,7 +295,8 @@ factual.table("places").filters("name" => {"$bw" => "starbucks"}).rows
 Filters can be logically AND'd together. For example:
 
 ````ruby
-query = query.filters({ "$and" => [{"name" => {"$bw" => "coffe"}}, {"tel" => {"$blank" => false}}] })
+# name begins with "coffee" AND tel is not blank
+query = query.filters({ "$and" => [{"name" => {"$bw" => "coffee"}}, {"tel" => {"$blank" => false}}] })
 ````
 
 ### OR
@@ -303,7 +304,8 @@ query = query.filters({ "$and" => [{"name" => {"$bw" => "coffe"}}, {"tel" => {"$
 Filters can be logically OR'd. For example:
 
 ````ruby
-query = query.filters({ "$or" => [{"name" => {"$bw" => "coffe"}}, {"tel" => {"$blank" => false}}] })
+# name begins with "coffee" OR tel is not blank
+query = query.filters({ "$or" => [{"name" => {"$bw" => "coffee"}}, {"tel" => {"$blank" => false}}] })
 ````
 
 ### Combined ANDs and ORs
@@ -311,8 +313,6 @@ query = query.filters({ "$or" => [{"name" => {"$bw" => "coffe"}}, {"tel" => {"$b
 You can nest AND and OR logic to whatever level of complexity you need. For example:
 
 ````ruby
-# Add a filter that finds entities where:
-#
 # (name begins with "Starbucks") OR (name begins with "Coffee")
 # OR
 # (name full text search matches on "tea" AND tel is not blank)
