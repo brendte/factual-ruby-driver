@@ -290,6 +290,38 @@ factual.table("places").filters("name" => {"$bw" => "starbucks"}).rows
   </tr>
 </table>
 
+### AND
+
+Filters can be logically AND'd together. For example:
+
+````ruby
+query = query.filters({ "$and" => [{"name" => {"$bw" => "coffe"}}, {"tel" => {"$blank" => false}}] })
+````
+
+### OR
+
+Filters can be logically OR'd. For example:
+
+````ruby
+query = query.filters({ "$or" => [{"name" => {"$bw" => "coffe"}}, {"tel" => {"$blank" => false}}] })
+````
+
+### Combined ANDs and ORs
+
+You can nest AND and OR logic to whatever level of complexity you need. For example:
+
+````ruby
+# Add a filter that finds entities where:
+#
+# (name begins with "Starbucks") OR (name begins with "Coffee")
+# OR
+# (name full text search matches on "tea" AND tel is not blank)
+query = query.filters({ "$or" => [ {"$or" => [ {"name" => {"$bw" => "starbucks"}},
+                                               {"name" => {"$bw" => "coffee"}}]},
+                                   {"$and" => [ {"name" => {"$search" => "tea"}},
+                                                {"tel" => {"$blank" => false}} ]} ]})
+````
+
 # Geo Filters
 
 You can query Factual for entities located within a geographic area. For example:
