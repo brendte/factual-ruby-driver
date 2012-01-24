@@ -21,7 +21,9 @@ Queries are created using the Factual handle, which provides a fluent interface 
 
 ````ruby
 # You can chain the query methods, like this:
-factual.table("places").filters("region" => "CA").search("sushi", "sashimi").geo("$circle" => {"$center" => [34.06021, -118.41828], "$meters" => 5000}).sort("name").page(2, :per => 10).rows
+factual.table("places").filters("region" => "CA").search("sushi", "sashimi")
+  .geo("$circle" => {"$center" => [34.06021, -118.41828], "$meters" => 5000})
+  .sort("name").page(2, :per => 10)
 ````
 
 Results are returned as Ruby Arrays of Hashes, where each Hash is a result record.
@@ -50,12 +52,14 @@ factual.table("places").filters("name" => {"$bw" => "starbucks"}).rows
 
 `````ruby
 # Return entity names and non-blank websites from the Global dataset, for entities located in Thailand
-factual.table("global").select(:name, :website).filters({"country" => "TH", "website" => {"$blank" => false}})
+factual.table("global").select(:name, :website)
+  .filters({"country" => "TH", "website" => {"$blank" => false}})
 ````
 
 `````ruby
 # Return highly rated U.S. restaurants in Los Angeles with WiFi
-factual.table("restaurants-us").filters({"locality" => "los angeles", "rating" => {"$gte" => 4}, "wifi" => true}).rows
+factual.table("restaurants-us")
+  .filters({"locality" => "los angeles", "rating" => {"$gte" => 4}, "wifi" => true}).rows
 ````
 
 ## Simple Crosswalk Example
@@ -88,17 +92,17 @@ query = factual.table("global")
 ````
 
 ````ruby
-# 2. Filter results in country US (For more filters syntax, refer to [Core API - Row Filters](http://developer.factual.com/display/docs/Core+API+-+Row+Filters))
+# 2. Filter results in country US
 query = query.filters("country" => "US")
 ````
 
 ````ruby
-# 3. Search for "sushi" or "sashimi" (For more search syntax, refer to [Core API - Search Filters](http://developer.factual.com/display/docs/Core+API+-+Search+Filters))
+# 3. Search for "sushi" or "sashimi"
 query = query.search("sushi", "sashimi")
 ````
 
 ````ruby
-# 4. Filter by Geo (For more geo syntax, refer to [Core API - Geo Filters](http://developer.factual.com/display/docs/Core+API+-+Geo+Filters))
+# 4. Filter by geolocation
 query = query.geo("$circle" => {"$center" => [34.06021, -118.41828], "$meters" => 5000})
 ````
 
