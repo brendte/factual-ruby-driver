@@ -28,13 +28,7 @@ Results are returned as Ruby Arrays of Hashes, where each Hash is a result recor
 
 ## Setup
 
-The driver's gems are hosted at [Rubygems.org](http://rubygems.org). Make sure you're using the latest version of rubygems:
-
-````bash
-$ gem update --system
-````
-
-Then you can install the factual-api gem as follows:
+The driver's gems are hosted at [Rubygems.org](http://rubygems.org). You can install the factual-api gem as follows:
 
 `````bash
 $ gem install factual-api
@@ -43,16 +37,25 @@ $ gem install factual-api
 Once the gem is installed, you can use it in your Ruby project like:
 
 ````ruby
-gem 'factual-api'
 require 'factual'
 factual = Factual.new("YOUR_KEY", "YOUR_SECRET")
 ````
   
-## Simple Read Example
+## Simple Read Examples
 
 `````ruby
-# Returns records from the Places dataset with names beginning with "starbucks"
+# Return entities from the Places dataset with names beginning with "starbucks"
 factual.table("places").filters("name" => {"$bw" => "starbucks"}).rows
+````
+
+`````ruby
+# Return entity names and non-blank websites from the Global dataset, for entities located in Thailand
+factual.table("global").select(:name, :website).filters({"country" => "TH", "website" => {"$blank" => false}})
+````
+
+`````ruby
+# Return highly rated U.S. restaurants in Los Angeles with WiFi
+factual.table("restaurants-us").filters({"locality" => "los angeles", "rating" => {"$gte" => 4}, "wifi" => true}).rows
 ````
 
 ## Simple Crosswalk Example
@@ -151,13 +154,18 @@ query.total_count
     <td>(See the section on Geo Filters)</td>
   </tr>
   <tr>
+    <td>limit</td>
+    <td>Limit the results</td>
+    <td><tt>query = query.limit(12)</tt></td>
+  </tr>
+  <tr>
     <td>page</td>
     <td>Limit the results to a specific "page".</td>
     <td><tt>query = query.page(2, :per => 10)</tt></td>
   </tr>
   <tr>
-    <td>search</td>
-    <td>Full text search query string.</td>
+    <td>search (across entity)</td>
+    <td>Full text search across entity</td>
     <td>
       Find "sushi":<br><tt>query = query.search("sushi")</tt><p>
       Find "sushi" or "sashimi":<br><tt>query = query.search("sushi", "sashimi")</tt><p>
@@ -165,15 +173,26 @@ query.total_count
     </td>
   </tr>
   <tr>
-    <td>only</td>
-    <td>What fields to include in the query results.  Note that the order of fields will not necessarily be preserved in the resulting response due to the nature Hashes.</td>
-    <td><tt>TODO!</tt></td>
+    <td>search (across field)</td>
+    <td>Full text search on specific field</td>
+    <td><tt>query = query.filters({"name" => {"$search" => "cafe"}})</tt></td>
+  </tr>
+  <tr>
+    <td>select</td>
+    <td>Specifiy which fields to include in the query results.  Note that the order of fields will not necessarily be preserved in the resulting response due to the nature Hashes.</td>
+    <td><tt>query = query.select(:name, :address, :locality, :region)</tt></td>
   </tr>
   <tr>
     <td>sort</td>
-    <td>The field (or fields) to sort data on, as well as the direction of sort.  Supports $distance as a sort option if a geo-filter is specified.  Supports $relevance as a sort option if a full text search is specified either using the q parameter or using the $search operator in the filter parameter.  By default, any query with a full text search will be sorted by relevance.  Any query with a geo filter will be sorted by distance from the reference point.  If both a geo filter and full text search are present, the default will be relevance followed by distance.</td>
+    <td>The field (or fields) to sort data on, as well as the direction of sort.<p>
+        Sorts ascending by default, but supports both explicitly sorting ascending and descending, by using <tt>sort_asc</tt> or <tt>sort_desc</tt>.
+        Supports $distance as a sort option if a geo-filter is specified.<p>
+        Supports $relevance as a sort option if a full text search is specified either using the q parameter or using the $search operator in the filter parameter.<p>
+        By default, any query with a full text search will be sorted by relevance.<p>
+        Any query with a geo filter will be sorted by distance from the reference point.  If both a geo filter and full text search are present, the default will be relevance followed by distance.</td>
     <td><tt>query = query.sort("name")</tt><br>
-    <tt>query = query.sort_desc("$distance")</tt></td>
+    <tt>query = query.sort_desc("$distance")</tt>
+    <tt>query = query.sort_asc("name").sort_desc("rating")</tt></td>
   </tr>
 </table>
 
