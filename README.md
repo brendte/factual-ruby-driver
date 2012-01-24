@@ -135,7 +135,7 @@ query.total_count
   <tr>
     <td>filters</td>
     <td>Restrict the data returned to conform to specific conditions.</td>
-    <td>query = query.filters("name" => {"$bw" => "starbucks"})</td>
+    <td><tt>query = query.filters("name" => {"$bw" => "starbucks"})</tt></td>
   </tr>
   <tr>
     <td>get total row count</td>
@@ -164,7 +164,7 @@ query.total_count
   <tr>
     <td>only</td>
     <td>What fields to include in the query results.  Note that the order of fields will not necessarily be preserved in the resulting response due to the nature Hashes.</td>
-    <td><tt>TODO! $query->only("name,tel,category")</tt> or <tt>$query->only(array("name","tel","category")</tt></td>
+    <td><tt>TODO!</tt></td>
   </tr>
   <tr>
     <td>sort</td>
@@ -194,12 +194,12 @@ factual.table("places").filters("name" => {"$bw" => "starbucks"}).rows
   <tr>
     <td>$eq</td>
     <td>equal to</td>
-    <td><tt><td>query = query.filters("region" => {"$eq" => "CA"})</td></tt></td>
+    <td><tt><td>query = query.filters("region" => {"$eq" => "CA"})</tt></td>
   </tr>
   <tr>
     <td>$neq</td>
     <td>not equal to</td>
-    <td><tt><td>query = query.filters("region" => {"$neq" => "CA"})</td></tt></td>
+    <td><tt><td>query = query.filters("region" => {"$neq" => "CA"})</tt></td>
   </tr>
   <tr>
     <td>search</td>
@@ -209,58 +209,58 @@ factual.table("places").filters("name" => {"$bw" => "starbucks"}).rows
   <tr>
     <td>$in</td>
     <td>equals any of</td>
-    <td><tt><td>query = query.filters("region" => {"$in" => ["CA", "NM", "NY"]})</td></tt></td>
+    <td><tt><td>query = query.filters("region" => {"$in" => ["CA", "NM", "NY"]})</tt></td>
   </tr>
   <tr>
     <td>$nin</td>
     <td>does not equal any of</td>
-    <td><tt><td>query = query.filters("region" => {"$nin" => ["CA", "NM", "NY"]})</td></tt></td>
+    <td><tt><td>query = query.filters("region" => {"$nin" => ["CA", "NM", "NY"]})</tt></td>
   </tr>
   <tr>
     <td>$bw</td>
     <td>begins with</td>
-    <td>query = query.filters("name" => {"$bw" => "starbucks"})</td>
+    <td><tt>query = query.filters("name" => {"$bw" => "starbucks"})</tt></td>
   </tr>
   <tr>
     <td>$nbw</td>
     <td>does not begin with</td>
-    <td>query = query.filters("name" => {"$nbw" => "starbucks"})</td>
+    <td><tt>query = query.filters("name" => {"$nbw" => "starbucks"})</tt></td>
   </tr>
   <tr>
     <td>$bwin</td>
     <td>begins with any of</td>
-    <td>query = query.filters("name" => {"$bwin" => ["starbucks", "coffee", "tea"]})</td>
+    <td><tt>query = query.filters("name" => {"$bwin" => ["starbucks", "coffee", "tea"]})</tt></td>
   </tr>
   <tr>
     <td>$nbwin</td>
     <td>does not begin with any of</td>
-    <td>query = query.filters("name" => {"$nbwin" => ["starbucks", "coffee", "tea"]})</td>
+    <td><tt>query = query.filters("name" => {"$nbwin" => ["starbucks", "coffee", "tea"]})</tt></td>
   </tr>
   <tr>
     <td>$blank</td>
     <td>test to see if a value is (or is not) blank or null</td>
-    <td>query = query.filters("tel" => {"$blank" => true})<br>
-        query = query.filters("website" => {"$blank" => false})</td>
+    <td><tt>query = query.filters("tel" => {"$blank" => true})</tt><br>
+        <tt>query = query.filters("website" => {"$blank" => false})</tt></td>
   </tr>
   <tr>
     <td>$gt</td>
     <td>greater than</td>
-    <td>query = query.filters("rating" => {"$gt" => 7.5})</td>
+    <td><tt>query = query.filters("rating" => {"$gt" => 7.5})</tt></td>
   </tr>
   <tr>
     <td>$gte</td>
     <td>greater than or equal</td>
-    <td>query = query.filters("rating" => {"$gte" => 7.5})</td>
+    <td><tt>query = query.filters("rating" => {"$gte" => 7.5})</tt></td>
   </tr>
   <tr>
     <td>$lt</td>
     <td>less than</td>
-    <td>query = query.filters("rating" => {"$lt" => 7.5})</td>
+    <td><tt>query = query.filters("rating" => {"$lt" => 7.5})</tt></td>
   </tr>
   <tr>
     <td>$lte</td>
     <td>less than or equal</td>
-    <td>query = query.filters("rating" => {"$lte" => 7.5})</td>
+    <td><tt>query = query.filters("rating" => {"$lte" => 7.5})</tt></td>
   </tr>
 </table>
 
