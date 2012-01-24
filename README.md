@@ -354,8 +354,8 @@ query = factual.resolve("name" => "McDonalds",
                         "region" => "CA",
                         "postcode" => "90025")
 
-query.first["resolved"]   # true or false
-query.rows                # all candidate rows
+query.first["resolved"] # true or false
+query.rows              # all candidate rows
 ````
 
 # Geo Filters
