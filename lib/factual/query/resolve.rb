@@ -11,7 +11,7 @@ class Factual
 
       [:values, :include_count].each do |param|
         define_method(param) do |*args|
-          Resolve.new(@api, @params.merge(param => form_value(args)))
+          self.class.new(@api, @params.merge(param => form_value(args)))
         end
       end
     end
