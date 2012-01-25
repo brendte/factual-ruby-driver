@@ -94,8 +94,9 @@ class ApiTest < Test::Unit::TestCase
     query = query.limit(3)
     assert_equal query.rows.length, 3
 
-    query = query.only('yelp')
-    assert_equal query.first['namespace'], 'yelp'
+    query = query.only(:yelp, :chow)
+    assert_equal query.rows.length, 2
+    assert_equal query.first['namespace'], 'chow'
   end
 
   def test_resolve
