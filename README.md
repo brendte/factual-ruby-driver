@@ -335,6 +335,26 @@ The driver fully supports Factual's Crosswalk feature, which lets you "crosswalk
 factual.crosswalk("110ace9f-80a7-47d3-9170-e9317624ebd9").rows
 ````
 
+## Supported Crosswalk Options
+
+### only
+
+You can select only specific Crosswalk attributes to get back, like this:
+
+````ruby
+# Get Crosswalk namespaces and urls for a Place with a specific FactualID
+factual.crosswalk("110ace9f-80a7-47d3-9170-e9317624ebd9").only(:namespace, url).rows
+````
+
+### limit
+
+You can limit the amount of Crosswalk results you get back, like this:
+
+````ruby
+# Get only 3 Crosswalk results for a Place with a specific FactualID
+factual.crosswalk("110ace9f-80a7-47d3-9170-e9317624ebd9").limit(3).rows
+````
+
 # Resolve
 
 The driver fully supports Factual's Resolve feature, which lets you start with incomplete data you may have for an entity, and get potential entity matches back from Factual.
