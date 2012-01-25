@@ -1,3 +1,7 @@
+## v1.0.0
+* fully documented
+* crosswalk(<factual_id>).only('yelp')
+
 ## v0.5
 * big refactoring from Rudy
 * ready for releasing
