@@ -9,9 +9,9 @@ class Factual
         super(api, params)
       end
 
-      [:factual_id, :include_count].each do |param|
+      [:factual_id, :only, :limit, :include_count].each do |param|
         define_method(param) do |*args|
-          CrossWalk.new(@api, @params.merge(param => form_value(args)))
+          self.class.new(@api, @params.merge(param => form_value(args)))
         end
       end
     end

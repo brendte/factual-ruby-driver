@@ -8,7 +8,7 @@ require File.expand_path(File.dirname(__FILE__)) + '/my_key_pair'
 class ApiTest < Test::Unit::TestCase
   
 
-  FACTUAL_ID = "03c26917-5d66-4de9-96bc-b13066173c65"
+  FACTUAL_ID = "110ace9f-80a7-47d3-9170-e9317624ebd9"
    
   def setup
     @api = Factual.new( FACTUAL_OAUTH_KEY, FACTUAL_OAUTH_SECRET )
@@ -88,8 +88,14 @@ class ApiTest < Test::Unit::TestCase
 
   def test_crosswalk
     query = @api.crosswalk(FACTUAL_ID)
+    assert_equal query.rows.length, 27
+    assert_equal query.first["namespace"], 'allmenus'
 
-    assert_equal query.first["namespace"], 'facebook'
+    query = query.limit(3)
+    assert_equal query.rows.length, 3
+
+    query = query.only('yelp')
+    assert_equal query.first['namespace'], 'yelp'
   end
 
   def test_resolve
