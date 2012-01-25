@@ -343,7 +343,7 @@ You can select only specific Crosswalk attributes to get back, like this:
 
 ````ruby
 # Get Crosswalk namespaces and urls for a Place with a specific FactualID
-factual.crosswalk("110ace9f-80a7-47d3-9170-e9317624ebd9").only(:namespace, url).rows
+factual.crosswalk("110ace9f-80a7-47d3-9170-e9317624ebd9").only(:namespace, :url).rows
 ````
 
 ### limit
