@@ -21,7 +21,7 @@ Queries are created using the Factual handle, which provides a fluent interface 
 
 ````ruby
 # You can chain the query methods, like this:
-factual.table("places").filters("region" => "CA").search("sushi", "sashimi")
+factual.table("places").filters("category" => "Food & Beverage > Restaurants").search("sushi", "sashimi")
   .geo("$circle" => {"$center" => [34.06021, -118.41828], "$meters" => 5000})
   .sort("name").page(2, :per => 10)
 ````

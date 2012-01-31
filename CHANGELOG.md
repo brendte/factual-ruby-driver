@@ -1,3 +1,6 @@
+## v1.0.1
+* fixed url escape for .filters(:category => "Food & Beverage > Restaurants")
+
 ## v1.0.0
 * fully documented
 * crosswalk(<factual_id>).only('yelp')

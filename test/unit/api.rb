@@ -43,10 +43,10 @@ class ApiTest < Test::Unit::TestCase
   end
 
   def test_paging
-    row = @api.table(:global).offset(10).limit(10).first
-    assert_match /El Bunker/, row["name"]
-    row = @api.table(:global).page(2, :per => 10).first
-    assert_match /El Bunker/, row["name"]
+    row = @api.table(:places).offset(10).limit(10).first
+    assert_match /Tupelo/, row["name"]
+    row = @api.table(:places).page(2, :per => 10).first
+    assert_match /Tupelo/, row["name"]
   end
 
   def test_rows
@@ -62,6 +62,11 @@ class ApiTest < Test::Unit::TestCase
     query.rows.each do |row|
       assert_match /Factual/, row["name"] 
     end
+  end
+
+  def test_filters
+    query = @api.table(:places).filters(:category => "Food & Beverage > Restaurants")
+    assert_equal query.first['name'], "Jessops Tavern"
   end
 
   def test_immutable
@@ -82,13 +87,13 @@ class ApiTest < Test::Unit::TestCase
   end
 
   def test_geo
-    query = @api.table(:global).geo("$circle" => {"$center" => [34.06021, -118.41828], "$meters" => 5000})
+    query = @api.table(:global).geo("$circle" => {"$center" => [34.06021, -118.41828], "$meters" => 1003}).search('factual')
     assert_equal query.first["name"], "Factual"
   end
 
   def test_crosswalk
     query = @api.crosswalk(FACTUAL_ID)
-    assert_equal query.rows.length, 27
+    assert_equal query.rows.length, 28
     assert_equal query.first["namespace"], 'allmenus'
 
     query = query.limit(3)

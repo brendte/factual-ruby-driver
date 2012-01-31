@@ -1,5 +1,5 @@
 require 'json'
-require 'uri'
+require 'cgi'
 
 class Factual
   class API
@@ -39,7 +39,7 @@ class Factual
       query_array = params.keys.inject([]) do |array, key|
         param_alias = PARAM_ALIASES[key.to_sym] || key.to_sym
         value = params[key].class == Hash ? params[key].to_json : params[key].to_s
-        array << "#{param_alias}=#{URI.escape(value)}"
+        array << "#{param_alias}=#{CGI.escape(value)}"
       end
 
       query_array.join("&")
