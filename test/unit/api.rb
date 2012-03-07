@@ -53,8 +53,8 @@ class ApiTest < Test::Unit::TestCase
     # basic
     query = @api.table(:global)
     rows = query.rows
-    total_rows = query.total_rows
-    assert (total_rows > 55_000_000)
+    total_count = query.total_count
+    assert (total_count > 55_000_000)
     assert_equal rows.length, 20
 
     # search

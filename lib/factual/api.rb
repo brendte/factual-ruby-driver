@@ -11,9 +11,9 @@ class Factual
       @access_token = access_token
     end
 
-    def execute(query)
-      params_with_count = query.params.merge(:include_count => true)
-      handle_request(query.action || :read, query.path, params_with_count)
+    def execute(query, other_params={})
+      merged_params = query.params.merge(other_params)
+      handle_request(query.action || :read, query.path, merged_params)
     end
 
     def schema(query)
