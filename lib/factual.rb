@@ -13,8 +13,12 @@ class Factual
     Query::Table.new(@api, "t/#{table_id_or_alias}")
   end
 
-  def crosswalk(factual_id)
-    Query::Crosswalk.new(@api, :factual_id => factual_id)
+  def crosswalk(namespace_id, namespace = nil)
+    if namespace
+      Query::Crosswalk.new(@api, :namespace_id => namespace_id, :namespace => namespace)
+    else
+      Query::Crosswalk.new(@api, :factual_id => namespace_id)
+    end
   end
 
   def resolve(values)

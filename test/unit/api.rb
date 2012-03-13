@@ -8,7 +8,8 @@ require File.expand_path(File.dirname(__FILE__)) + '/my_key_pair'
 class ApiTest < Test::Unit::TestCase
   
 
-  FACTUAL_ID = "110ace9f-80a7-47d3-9170-e9317624ebd9"
+  FACTUAL_ID   = "110ace9f-80a7-47d3-9170-e9317624ebd9"
+  SIMPLEGEO_ID = "SG_6XIEi3qehN44LH8m8i86v0"
    
   def setup
     @api = Factual.new( FACTUAL_OAUTH_KEY, FACTUAL_OAUTH_SECRET )
@@ -93,7 +94,7 @@ class ApiTest < Test::Unit::TestCase
 
   def test_crosswalk
     query = @api.crosswalk(FACTUAL_ID)
-    assert_equal query.rows.length, 28
+    assert_equal query.rows.length, 20
     assert_equal query.first["namespace"], 'allmenus'
 
     query = query.limit(3)
@@ -102,17 +103,21 @@ class ApiTest < Test::Unit::TestCase
     query = query.only(:yelp, :chow)
     assert_equal query.rows.length, 2
     assert_equal query.first['namespace'], 'chow'
+
+    query = @api.crosswalk(SIMPLEGEO_ID, :simplegeo)
+    assert_equal query.first['factual_id'], FACTUAL_ID
+
   end
 
   def test_resolve
     query = @api.resolve(:name => 'factual inc', :locality => 'los angeles')
 
-    assert query.first["resolved"]
+    assert_equal query.first["resolved"], true
     assert_match /stars/i, query.first["address"]
   end
 
   def test_schema
     schema = @api.table(:global).schema()
-    assert_equal schema["fields"].length, 21
+    assert_equal schema["fields"].length, 22
   end
 end

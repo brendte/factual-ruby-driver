@@ -1,3 +1,6 @@
+## v1.0.3
+* adding crosswalk(namespace_id, namespace)
+
 ## v1.0.2
 * lazy getting total_count of a query
 * changed Query#total_rows to Query#total_count to be consistent
