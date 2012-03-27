@@ -402,5 +402,16 @@ You can query Factual for the detailed schema of any specific table in Factual. 
 factual.table("global").schema
 ````
 
+# Raw Read Queries
+
+You can perform any read queries documented in the Factual API using the
+raw read query. Just supply the full path (including the first
+forward-slash) and the request will be made using your OAuth token:
+
+````ruby
+# Find rows in the restaurant database whose name begins with "Star" and return both the data and a total count of the matched rows
+factual.read('/t/restaurants-us?filters={"name":{"$bw":"Star"}}&include_count=true')
+````
+
 
 

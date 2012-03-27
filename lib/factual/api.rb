@@ -20,18 +20,26 @@ class Factual
       handle_request(:schema, query.path + "/schema", query.params)["view"]
     end
 
+    def raw_read(path)
+      payload = JSON.parse(make_request("#{API_V3_HOST}#{path}").body)
+      handle_payload(payload)
+    end
+
     private
 
     def handle_request(action, path, params)
-      payload = JSON.parse(make_request(path, params).body)
+      url = "#{API_V3_HOST}/#{path}?#{query_string(params)}"
+      payload = JSON.parse(make_request(url).body)
+      handle_payload(payload)
+    end
+
+    def handle_payload(payload)
       raise StandardError.new(payload["message"]) unless payload["status"] == "ok"
       payload["response"]
     end
 
-    def make_request(path, params)
-      url = "#{API_V3_HOST}/#{path}?#{query_string(params)}"
+    def make_request(url)
       headers = { "X-Factual-Lib" => DRIVER_VERSION_TAG }
-
       @access_token.get(url, headers)
     end
 

@@ -25,6 +25,10 @@ class Factual
     Query::Resolve.new(@api, :values => values)
   end
 
+  def read(path)
+    @api.raw_read(path)
+  end
+
   private
 
   def generate_token(key, secret)
