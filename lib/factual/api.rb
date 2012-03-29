@@ -7,8 +7,9 @@ class Factual
     DRIVER_VERSION_TAG = "factual-ruby-driver-1.0"
     PARAM_ALIASES      = { :search => :q, :sort_asc => :sort }
 
-    def initialize(access_token)
+    def initialize(access_token, debug_mode = false)
       @access_token = access_token
+      @debug_mode = debug_mode
     end
 
     def execute(query, other_params={})
@@ -29,6 +30,7 @@ class Factual
 
     def handle_request(action, path, params)
       url = "#{API_V3_HOST}/#{path}?#{query_string(params)}"
+      puts "Request: #{url}" if @debug_mode
       payload = JSON.parse(make_request(url).body)
       handle_payload(payload)
     end

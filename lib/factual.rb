@@ -5,8 +5,8 @@ require 'factual/query/resolve'
 require 'factual/query/crosswalk'
 
 class Factual
-  def initialize(key, secret)
-    @api = API.new(generate_token(key, secret))
+  def initialize(key, secret, debug_mode = false)
+    @api = API.new(generate_token(key, secret), debug_mode)
   end
 
   def table(table_id_or_alias)
