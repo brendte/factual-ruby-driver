@@ -1,3 +1,7 @@
+## v1.1
+* debug mode
+* raw read
+
 ## v1.0.3
 * adding crosswalk(namespace_id, namespace)
 
