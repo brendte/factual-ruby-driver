@@ -11,6 +11,16 @@ describe Factual::Query::Table do
     @base = "http://api.v3.factual.com/t/places?"
   end
 
+  it "should be able to do a compound query" do
+    @table.filters("category" => "Food & Beverage > Restaurants").search("sushi", "sashimi")
+      .geo("$circle" => {"$center" => [34.06021, -118.41828], "$meters" => 5000})
+      .sort("name").page(2, :per => 10).rows
+    expected_url = @base + "filters={\"category\":\"Food & Beverage > Restaurants\"}" + 
+      "&q=sushi,sashimi&geo={\"$circle\":{\"$center\":[34.06021,-118.41828],\"$meters\":5000}}" + 
+      "&sort=name&limit=10&offset=10"
+    CGI::unescape(@token.last_url).should == expected_url
+  end
+
   it "should be able to use filters" do
     @table.filters("country" => "US").rows
     expected_url = @base + "filters={\"country\":\"US\"}"
