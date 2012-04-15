@@ -3,6 +3,7 @@ require 'factual/api'
 require 'factual/query/table'
 require 'factual/query/resolve'
 require 'factual/query/crosswalk'
+require 'factual/flag'
 
 class Factual
   def initialize(key, secret, options = {})
