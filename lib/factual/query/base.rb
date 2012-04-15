@@ -27,7 +27,7 @@ class Factual
       end
 
       def total_count
-        resp = @api.execute(self, :include_count => true, :limit => 1)
+        resp = @api.get(self, :include_count => true, :limit => 1)
         resp["total_row_count"]
       end
 
@@ -43,7 +43,7 @@ class Factual
       end
 
       def response
-        @response ||= @api.execute(self)
+        @response ||= @api.get(self)
       end
     end
   end

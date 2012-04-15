@@ -12,7 +12,7 @@ class Factual
       @debug_mode = debug_mode
     end
 
-    def execute(query, other_params={})
+    def get(query, other_params={})
       merged_params = query.params.merge(other_params)
       handle_request(query.action || :read, query.path, merged_params)
     end

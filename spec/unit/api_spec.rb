@@ -8,17 +8,17 @@ describe Factual::API do
     @api = get_api(@token)
   end
 
-  it "should be able to execute a query" do
+  it "should be able to get a query" do
     table = Factual::Query::Table.new(@api, "t/places")
     query = table.search("foo")
-    @api.execute(query)
+    @api.get(query)
     @token.last_url.should == "http://api.v3.factual.com/t/places?q=foo"
   end
 
-  it "should be able to execute a query with additional params" do
+  it "should be able to get a query with additional params" do
     table = Factual::Query::Table.new(@api, "t/places")
     query = table.search("foo")
-    @api.execute(query, "bar" => "baz")
+    @api.get(query, "bar" => "baz")
     @token.last_url.should == "http://api.v3.factual.com/t/places?q=foo&bar=baz"
   end
 
