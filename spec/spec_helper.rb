@@ -9,18 +9,26 @@ end
 
 class MockAccessToken
   class Response
+    def initialize(type = :get)
+      @type = type
+    end
+
     def body
       { "status" => "ok", "response" => response }.to_json
     end
 
     def response
-      {
-        "data" => [
-          { :key => "value1" },
-          { :key => "value2" },
-          { :key => "value3" }
-        ]
-      }
+      if @type == :get
+        {
+          "data" => [
+            { :key => "value1" },
+            { :key => "value2" },
+            { :key => "value3" }
+          ]
+        }
+      elsif @type == :post
+        "OK"
+      end
     end
   end
 
@@ -28,11 +36,18 @@ class MockAccessToken
 
   def initialize
     @last_url = nil
+    @last_body = nil
   end
 
   def get(url, headers)
     @last_url = url
     Response.new
+  end
+
+  def post(url, body, headers)
+    @last_url = url
+    @last_body = body
+    Response.new(:post)
   end
 end
 
