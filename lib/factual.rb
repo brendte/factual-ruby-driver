@@ -30,6 +30,15 @@ class Factual
     @api.raw_read(path)
   end
 
+  def flag(table, factual_id, problem, user)
+    flag_params = {
+      :table => table,
+      :factual_id => factual_id,
+      :problem => problem,
+      :user => user }
+    Flag.new(@api, flag_params)
+  end
+
   private
 
   def generate_token(key, secret)

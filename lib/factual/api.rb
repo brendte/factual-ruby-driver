@@ -17,6 +17,12 @@ class Factual
       handle_request(query.action || :read, query.path, merged_params)
     end
 
+    def post(request, other_params)
+      response = make_post_request(API_V3_HOST + request.path, request.body)
+      payload = JSON.parse(response.body)
+      handle_payload(payload)
+    end
+
     def schema(query)
       handle_request(:schema, query.path + "/schema", query.params)["view"]
     end
@@ -38,6 +44,11 @@ class Factual
     def handle_payload(payload)
       raise StandardError.new(payload["message"]) unless payload["status"] == "ok"
       payload["response"]
+    end
+
+    def make_post_request(url, body)
+      headers = { "X-Factual-Lib" => DRIVER_VERSION_TAG }
+      @access_token.post(url, body, headers)
     end
 
     def make_request(url)
