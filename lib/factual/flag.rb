@@ -21,7 +21,7 @@ class Factual
 
     def body
       keys = @params.keys.reject { |key| [:table, :factual_id].include?(key) }
-      keys.map { |key| "#{key}=#{@params[key]}" }.join("&")
+      keys.map { |key| "#{key}=#{CGI.escape(stringify(@params[key]))}" }.join("&")
     end
 
     def write
@@ -29,6 +29,10 @@ class Factual
     end
 
     private
+
+    def stringify(value)
+      value.class == Hash ? value.to_json : value.to_s
+    end
 
     def form_value(args)
       args = args.map { |arg| arg.is_a?(String) ? arg.strip : arg }
