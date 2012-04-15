@@ -20,7 +20,8 @@ class Factual
     end
 
     def body
-      @params.keys.map { |key| "#{key}=#{@params[key]}" }.join("&")
+      keys = @params.keys.reject { |key| [:table, :factual_id].include?(key) }
+      keys.map { |key| "#{key}=#{@params[key]}" }.join("&")
     end
 
     def write

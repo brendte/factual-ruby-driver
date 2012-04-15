@@ -12,12 +12,12 @@ class Factual
       @debug_mode = debug_mode
     end
 
-    def get(query, other_params={})
+    def get(query, other_params = {})
       merged_params = query.params.merge(other_params)
       handle_request(query.action || :read, query.path, merged_params)
     end
 
-    def post(request, other_params)
+    def post(request)
       response = make_post_request(API_V3_HOST + request.path, request.body)
       payload = JSON.parse(response.body)
       handle_payload(payload)

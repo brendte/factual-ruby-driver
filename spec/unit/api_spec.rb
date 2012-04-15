@@ -15,7 +15,17 @@ describe Factual::API do
     @token.last_url.should == "http://api.v3.factual.com/t/places?q=foo"
   end
 
-  it "should be able to post a query"
+  it "should be able to post a query" do
+    flag_params = {
+      :table => "global",
+      :factual_id => "id123",
+      :problem => :duplicate,
+      :user => "user123" }
+    flag = Factual::Flag.new(@api, flag_params)
+    @api.post(flag)
+    @token.last_url.should == "http://api.v3.factual.com/t/global/id123/flag"
+    @token.last_body.should == "problem=duplicate&user=user123"
+  end
 
   it "should be able to get a query with additional params" do
     table = Factual::Query::Table.new(@api, "t/places")

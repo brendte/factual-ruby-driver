@@ -32,7 +32,7 @@ class MockAccessToken
     end
   end
 
-  attr_reader :last_url
+  attr_reader :last_url, :last_body
 
   def initialize
     @last_url = nil
