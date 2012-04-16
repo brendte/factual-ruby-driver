@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Factual::Flag do
+describe Factual::Write::Flag do
   include TestHelpers
 
   before(:each) do
@@ -11,7 +11,8 @@ describe Factual::Flag do
       :factual_id => "id123",
       :problem => :duplicate,
       :user => "user123" }
-    @flag = Factual::Flag.new(@api, @basic_params)
+    @klass = Factual::Write::Flag
+    @flag = @klass.new(@api, @basic_params)
   end
 
   it "should be able to write a basic flag" do
@@ -24,7 +25,7 @@ describe Factual::Flag do
     bad_params = @basic_params.merge!(:problem => :foo)
     raised = false
     begin
-      bad_flag = Factual::Flag.new(@api, bad_params)
+      bad_flag = @klass.new(@api, bad_params)
     rescue
       raised = true
     end
@@ -35,7 +36,7 @@ describe Factual::Flag do
     bad_params = @basic_params.merge!(:foo => :bar)
     raised = false
     begin
-      bad_flag = Factual::Flag.new(@api, bad_params)
+      bad_flag = @klass.new(@api, bad_params)
     rescue
       raised = true
     end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Factual::Contribute do
+describe Factual::Write::Contribute do
   include TestHelpers
 
   before(:each) do
@@ -10,7 +10,7 @@ describe Factual::Contribute do
       :table => "global",
       :user => "user123",
       :values => { :name => "McDonalds" } }
-    @klass = Factual::Contribute
+    @klass = Factual::Write::Contribute
     @contribute = @klass.new(@api, @basic_params)
   end
 

@@ -21,7 +21,7 @@ describe Factual::API do
       :factual_id => "id123",
       :problem => :duplicate,
       :user => "user123" }
-    flag = Factual::Flag.new(@api, flag_params)
+    flag = Factual::Write::Flag.new(@api, flag_params)
     @api.post(flag)
     @token.last_url.should == "http://api.v3.factual.com/t/global/id123/flag"
     @token.last_body.should == "problem=duplicate&user=user123"
