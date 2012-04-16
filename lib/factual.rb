@@ -1,6 +1,7 @@
 require 'oauth'
 require 'factual/api'
 require 'factual/query/table'
+require 'factual/query/facets'
 require 'factual/query/resolve'
 require 'factual/query/crosswalk'
 require 'factual/flag'
@@ -13,6 +14,10 @@ class Factual
 
   def table(table_id_or_alias)
     Query::Table.new(@api, "t/#{table_id_or_alias}")
+  end
+
+  def facets(table_id_or_alias)
+    Query::Facets.new(@api, "t/#{table_id_or_alias}")
   end
 
   def crosswalk(namespace_id, namespace = nil)
