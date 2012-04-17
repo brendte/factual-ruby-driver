@@ -8,6 +8,7 @@ This API supports queries to Factual's Read, Schema, Crosswalk, and Resolve APIs
 *   [Schema](http://developer.factual.com/display/docs/Core+API+-+Schema): Get table metadata
 *   [Crosswalk](http://developer.factual.com/display/docs/Places+API+-+Crosswalk): Get third-party IDs
 *   [Resolve](http://developer.factual.com/display/docs/Places+API+-+Resolve): Enrich your data and match it against Factual's
+*   [Facets](http://wiki.corp.factual.com/display/DOCS/Core+API+-+Facets): Get facets of the data
 
 This driver is supported via the [Factual Developer Group](https://groups.google.com/group/factual_developers)
 
@@ -391,6 +392,15 @@ You can query Factual for entities located within a geographic area. For example
 
 ````ruby
 query = query.geo("$circle" => {"$center" => [34.06021, -118.41828], "$meters" => 5000})
+````
+
+# Facets
+
+You can query Factual for the facets of columns in a table. For example:
+
+````ruby
+# Returns a hash of row counts that grouped by column names
+factual.facets("global").select("category", "country").columns
 ````
 
 # Schema
