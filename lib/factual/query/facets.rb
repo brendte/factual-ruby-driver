@@ -23,6 +23,16 @@ class Factual
         end
       end
 
+      def each(&block)
+        columns.each do |col, data|
+          block.call(col, data)
+        end
+      end
+
+      def [](col)
+        columns[col]
+      end
+
       def columns
         response["data"]
       end
