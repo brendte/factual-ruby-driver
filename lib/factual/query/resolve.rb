@@ -5,7 +5,7 @@ class Factual
     class Resolve < Base
       def initialize(api, params = {})
         @path = "places/resolve"
-        @action = :resolve
+        @action = :read
         super(api, params)
       end
 

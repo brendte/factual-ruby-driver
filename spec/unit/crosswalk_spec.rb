@@ -47,7 +47,7 @@ describe Factual::Query::Crosswalk do
   end
 
   it "should be able to fetch the action" do
-    @crosswalk.action.should == :crosswalk
+    @crosswalk.action.should == :read
   end
 
   it "should be able to fetch the path" do

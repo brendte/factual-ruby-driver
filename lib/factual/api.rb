@@ -24,7 +24,7 @@ class Factual
     end
 
     def schema(query)
-      handle_request(:schema, query.path + "/schema", query.params)["view"]
+      handle_request(:schema, query.path, query.params)["view"]
     end
 
     def raw_read(path)
@@ -35,7 +35,10 @@ class Factual
     private
 
     def handle_request(action, path, params)
-      url = "#{API_V3_HOST}/#{path}?#{query_string(params)}"
+      url = "#{API_V3_HOST}/#{path}"
+      url += "/#{action}" unless action == :read
+      url += "?#{query_string(params)}"
+
       puts "Request: #{url}" if @debug_mode
       payload = JSON.parse(make_request(url).body)
       handle_payload(payload)

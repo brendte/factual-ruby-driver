@@ -9,8 +9,9 @@ end
 
 class MockAccessToken
   class Response
-    def initialize(type = :get)
-      @type = type
+    def initialize(type, action = :read)
+      @type   = type
+      @action = action
     end
 
     def body
@@ -19,13 +20,30 @@ class MockAccessToken
 
     def response
       if @type == :get
-        {
-          "data" => [
-            { :key => "value1" },
-            { :key => "value2" },
-            { :key => "value3" }
-          ]
-        }
+        if @action == :read
+          {
+            "data" => [
+              { :key => "value1" },
+              { :key => "value2" },
+              { :key => "value3" }
+            ]
+          }
+        elsif @action == :facets
+          {
+            "data" => {
+              'category' => {
+                "legal & financial" => 123456,
+                "shopping"          => 23456,
+                "education"         => 3456
+              },
+              'locality' => {
+                "los angeles" => 123456,
+                "new york"    => 23456,
+                "houston"     => 3456
+              }
+            }
+          }
+        end
       elsif @type == :post
         "OK"
       end
@@ -34,14 +52,15 @@ class MockAccessToken
 
   attr_reader :last_url, :last_body
 
-  def initialize
-    @last_url = nil
+  def initialize(action)
+    @action    = action
+    @last_url  = nil
     @last_body = nil
   end
 
   def get(url, headers)
     @last_url = url
-    Response.new
+    Response.new(:get, @action)
   end
 
   def post(url, body, headers)
@@ -52,8 +71,8 @@ class MockAccessToken
 end
 
 module TestHelpers
-  def get_token
-    MockAccessToken.new
+  def get_token(action=:read)
+    MockAccessToken.new(action)
   end
 
   def get_api(token)

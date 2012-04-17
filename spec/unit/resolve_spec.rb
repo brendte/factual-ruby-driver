@@ -35,7 +35,7 @@ describe Factual::Query::Resolve do
   end
 
   it "should be able to fetch the action" do
-    @resolve.action.should == :resolve
+    @resolve.action.should == :read
   end
 
   it "should be able to fetch the path" do
