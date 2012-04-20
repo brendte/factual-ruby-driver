@@ -504,6 +504,7 @@ flag.write
   </tr>
 </table>  
 
+
 # Contribute
 
 The driver fully supports Factual's Contribute feature, which enables you to contribute edits to existing rows and/or contribute new rows of data in Factual tables. For information on deleting records, see Flag.
@@ -520,7 +521,7 @@ factual.contribute("global", "user123").values({"name" => "McDenny's", "address"
 
 ````ruby
 # Contribute a correction to an existing row in Factual's places dataset.
-# Also set optional <tt>comment</tt> and <tt>reference</tt>
+# Also set optional comment and reference
 contr = factual.contribute("places", "user123").values({:name => "McDenny's"})
 contr = contr.comment("They changed their name last month").reference("http://www.example.com/mypage.html")
 contr.write
