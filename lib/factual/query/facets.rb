@@ -7,7 +7,7 @@ class Factual
       VALID_PARAMS  = [
         :filters, :search, :geo, 
         :select, 
-        :limit,
+        :limit, :min_count,
         :include_count
       ] 
 
