@@ -50,6 +50,10 @@ class Factual
     end
 
     def make_post_request(url, body)
+      if @debug_mode
+        puts "Request: #{url}"
+        puts "Body: #{body}"
+      end
       headers = { "X-Factual-Lib" => DRIVER_VERSION_TAG }
       @access_token.post(url, body, headers)
     end
