@@ -2,13 +2,15 @@
 
 This is the Factual supported Ruby driver for [Factual's public API](http://developer.factual.com/display/docs/Factual+Developer+APIs+Version+3).
 
-This API supports queries to Factual's Read, Schema, Crosswalk, and Resolve APIs. Full documentation is available on the Factual website:
+This API supports queries to Factual's public API, including Read, Crosswalk, Resolve, Facets, Flag, and Contribute. Full documentation is available on the Factual website:
 
 *   [Read](http://developer.factual.com/display/docs/Factual+Developer+APIs+Version+3): Search the data
 *   [Schema](http://developer.factual.com/display/docs/Core+API+-+Schema): Get table metadata
 *   [Crosswalk](http://developer.factual.com/display/docs/Places+API+-+Crosswalk): Get third-party IDs
 *   [Resolve](http://developer.factual.com/display/docs/Places+API+-+Resolve): Enrich your data and match it against Factual's
 *   [Facets](http://wiki.corp.factual.com/display/DOCS/Core+API+-+Facets): Get facets of the data
+*   [Contribute](http://wiki.corp.factual.com/display/DOCS/Core+API+-+Contribute): Contribute corrections and new data to Factual tables
+*   [Flag](http://wiki.corp.factual.com/display/DOCS/Core+API+-+Flag): flag problematic rows in Factual tables
 
 This driver is supported via the [Factual Developer Group](https://groups.google.com/group/factual_developers)
 
