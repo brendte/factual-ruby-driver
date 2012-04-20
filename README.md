@@ -396,12 +396,182 @@ query = query.geo("$circle" => {"$center" => [34.06021, -118.41828], "$meters" =
 
 # Facets
 
-You can query Factual for the facets of columns in a table. For example:
+The driver fully supports Factual's Facets feature, which lets you return row counts for Factual tables, grouped by facets of data.  For example, you may want to query all businesses within 1 mile of a location and for a count of those businesses by category.
+
+For example:
 
 ````ruby
-# Returns a hash of row counts that grouped by column names
-factual.facets("global").select("category", "country").columns
+# Returns a count of Starbucks by country
+factual.facets("global").select("country").search("starbucks").columns
 ````
+
+## All Top Level Facets Parameters
+
+<table>
+  <col width="33%"/>
+  <col width="33%"/>
+  <col width="33%"/>
+  <tr>
+    <th>Parameter</th>
+    <th>Description</th>
+    <th>Example</th>
+  </tr>
+  <tr>
+    <td>select</td>
+    <td>The fields for which facets should be generated. The response will not be ordered identically to this list, nor will it reflect any nested relationships between fields.</td>
+    <td><tt>.select("region", "locality")</tt></td>
+  </tr>
+  <tr>
+    <td>limit</td>
+    <td>The maximum number of unique facet values that can be returned for a single field. Range is 1-250. The default is 25.</td>
+    <td><tt>.limit(10)</tt></td>
+  </tr>
+  <tr>
+    <td>filters</td>
+    <td>Restrict the data returned to conform to specific conditions.</td>
+    <td><tt>.filters("name" => {"$bw" => "starbucks"})</tt></td>
+  </tr>
+  <tr>
+    <td>include_count</td>
+    <td>Include a count of the total number of rows in the dataset that conform to the request based on included filters. Requesting the row count will increase the time required to return a response. The default behavior is to NOT include a row count. When the row count is requested, the Response object will contain a valid total row count via <tt>.getTotalRowCount()</tt>.</td>
+    <td><tt>.include_count</tt></td>
+  </tr>
+  <tr>
+    <td>geo</td>
+    <td>Restrict data to be returned to be within a geographical range.</td>
+    <td>(See the section on Geo Filters)</td>
+  </tr>
+  <tr>
+    <td>search</td>
+    <td>Full text search query string.</td>
+    <td>
+      Find "sushi":<br><tt>.search("sushi")</tt><p>
+      Find "sushi" or "sashimi":<br><tt>.search("sushi, sashimi")</tt><p>
+      Find "sushi" and "santa" and "monica":<br><tt>.search("sushi santa monica")</tt>
+    </td>
+  </tr>
+</table>  
+  
+</table>
+
+
+# Flag
+
+Factual's Flag feature enables flagging problematic rows in Factual tables. Use this feature if you are requesting for an entity to be deleted or merged into a duplicate record.
+
+## Simple Flag Example
+
+````ruby
+# User user123 flags row 0545b03f-9413-44ed-8882-3a9a461848da in the global dataset as inaccurate
+factual.flag("global", "0545b03f-9413-44ed-8882-3a9a461848da", :inaccurate, "user123").write
+````
+
+The reason for flagging must be one of the following:
+<ul>
+<li>:duplicate
+<li>:nonexistent
+<li>:inaccurate
+<li>:inappropriate
+<li>:spam
+<li>:other
+</ul>
+
+You can also create a Flag object and set it with optional parameters beforing writing it. For example:
+
+````ruby
+flag = factual.flag("global", "0545b03f-9413-44ed-8882-3a9a461848da", :inaccurate, "user123")
+flag = flag.comment("this row is outdated").reference("http://www.example.com/somepage.html")
+flag.write
+````
+
+## Optional Flag Parameters
+
+<table>
+  <tr>
+    <th>Parameter</th>
+    <th>Description</th>
+    <th>Example</th>
+  </tr>
+  <tr>
+    <td>comment</td>
+    <td>Any english text comment that may help explain your corrections.</td>
+    <td><tt>.comment("this row is outdated")</tt></td>
+  </tr>
+  <tr>
+    <td>reference</td>
+    <td>A reference to a URL, title, person, etc. that is the source of this data.</td>
+    <td><tt>.reference("http://www.example.com/somepage.html")</tt></td>
+  </tr>
+</table>  
+
+# Contribute
+
+The driver fully supports Factual's Contribute feature, which enables you to contribute edits to existing rows and/or contribute new rows of data in Factual tables. For information on deleting records, see Flag.
+
+
+## Simple Contribute Examples
+
+The <tt>contribute</tt> method is a contribution to edit an existing row or add a new row:
+
+````ruby
+# Contribute a new row to Factual's global dataset
+factual.contribute("global", "user123").values({"name" => "McDenny's", "address" => "1 Main St.", "locality" => "Bedrock", "region" => "BC"}).write
+````
+
+````ruby
+# Contribute a correction to an existing row in Factual's places dataset.
+# Also set optional <tt>comment</tt> and <tt>reference</tt>
+contr = factual.contribute("places", "user123").values({:name => "McDenny's"})
+contr = contr.comment("They changed their name last month").reference("http://www.example.com/mypage.html")
+contr.write
+````
+
+
+## Required Contribute Parameters
+
+<table>
+  <tr>
+    <th>Parameter</th>
+    <th>Description</th>
+    <th>Example</th>
+  </tr>
+  <tr>
+    <td>values</td>
+    <td>A hash of names and values to be added to a Factual table</td>
+    <td><tt>{"name" => "McDenny's", "address" => "1 Main St.", "locality" => "Bedrock", "region" => "BC"}</tt></td>
+  </tr>
+  <tr>
+    <td>user</td>
+    <td>An arbitrary token representing the user contributing the data.</td>
+    <td><tt>user123</tt></td>
+  </tr>
+</table>
+
+## Optional Contribute Parameters
+
+<table>
+  <tr>
+    <th>Parameter</th>
+    <th>Description</th>
+    <th>Example</th>
+  </tr>
+  <tr>
+    <td>factual_id</td>
+    <td>The factual_id of the row to which you want to contribute a correction</td>
+    <td><tt>.factual_id("0545b03f-9413-44ed-8882-3a9a461848da")</tt></td>
+  </tr>
+  <tr>
+    <td>comment</td>
+    <td>Any english text comment that may help explain your corrections.</td>
+    <td><tt>.comment("They changed their name last month")</tt></td>
+  </tr>
+  <tr>
+    <td>reference</td>
+    <td>A reference to a URL, title, person, etc. that is the source of this data.</td>
+    <td><tt>.reference("http://www.example.com/mypage.html")</tt></td>
+  </tr>
+</table>	
+
 
 # Schema
 
