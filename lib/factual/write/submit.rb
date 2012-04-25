@@ -2,7 +2,7 @@ require 'factual/write/base'
 
 class Factual
   module Write
-    class Contribute < Base
+    class Submit < Base
       VALID_KEYS = [:table, :user, :factual_id, :values]
 
       def initialize(api, params)
@@ -12,15 +12,15 @@ class Factual
 
       VALID_KEYS.each do |key|
         define_method(key) do |*args|
-          Contribute.new(@api, @params.merge(key => form_value(args)))
+          Submit.new(@api, @params.merge(key => form_value(args)))
         end
       end
 
       def path
         if @params[:factual_id]
-          "/t/#{@params[:table]}/#{@params[:factual_id]}/contribute"
+          "/t/#{@params[:table]}/#{@params[:factual_id]}/submit"
         else
-          "/t/#{@params[:table]}/contribute"
+          "/t/#{@params[:table]}/submit"
         end
       end
 
@@ -28,7 +28,7 @@ class Factual
 
       def validate_params(params)
         params.keys.each do |key|
-          raise "Invalid contribute option: #{key}" unless VALID_KEYS.include?(key)
+          raise "Invalid submit option: #{key}" unless VALID_KEYS.include?(key)
         end
       end
     end

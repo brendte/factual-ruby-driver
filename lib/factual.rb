@@ -5,7 +5,7 @@ require 'factual/query/facets'
 require 'factual/query/resolve'
 require 'factual/query/crosswalk'
 require 'factual/write/flag'
-require 'factual/write/contribute'
+require 'factual/write/submit'
 
 class Factual
   def initialize(key, secret, options = {})
@@ -47,9 +47,9 @@ class Factual
     Write::Flag.new(@api, flag_params)
   end
 
-  def contribute(table, user, values = {})
-    contribute_params = { :table => table, :user => user, :values => values }
-    Write::Contribute.new(@api, contribute_params)
+  def submit(table, user, values = {})
+    submit_params = { :table => table, :user => user, :values => values }
+    Write::Submit.new(@api, submit_params)
   end
 
   private
