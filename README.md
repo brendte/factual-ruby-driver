@@ -2,14 +2,14 @@
 
 This is the Factual supported Ruby driver for [Factual's public API](http://developer.factual.com/display/docs/Factual+Developer+APIs+Version+3).
 
-This API supports queries to Factual's public API, including Read, Crosswalk, Resolve, Facets, Flag, and Contribute. Full documentation is available on the Factual website:
+This API supports queries to Factual's public API, including Read, Crosswalk, Resolve, Facets, Flag, and Submit. Full documentation is available on the Factual website:
 
 *   [Read](http://developer.factual.com/display/docs/Factual+Developer+APIs+Version+3): Search the data
 *   [Schema](http://developer.factual.com/display/docs/Core+API+-+Schema): Get table metadata
 *   [Crosswalk](http://developer.factual.com/display/docs/Places+API+-+Crosswalk): Get third-party IDs
 *   [Resolve](http://developer.factual.com/display/docs/Places+API+-+Resolve): Enrich your data and match it against Factual's
 *   [Facets](http://wiki.corp.factual.com/display/DOCS/Core+API+-+Facets): Get facets of the data
-*   [Contribute](http://wiki.corp.factual.com/display/DOCS/Core+API+-+Contribute): Contribute corrections and new data to Factual tables
+*   [Submit](http://wiki.corp.factual.com/display/DOCS/Core+API+-+Submit): Submit corrections and new data to Factual tables
 *   [Flag](http://wiki.corp.factual.com/display/DOCS/Core+API+-+Flag): flag problematic rows in Factual tables
 
 This driver is supported via the [Factual Developer Group](https://groups.google.com/group/factual_developers)
@@ -507,30 +507,30 @@ flag.write
 </table>  
 
 
-# Contribute
+# Submit
 
-The driver fully supports Factual's Contribute feature, which enables you to contribute edits to existing rows and/or contribute new rows of data in Factual tables. For information on deleting records, see Flag.
+The driver fully supports Factual's Submit feature, which enables you to submit edits to existing rows and/or submit new rows of data in Factual tables. For information on deleting records, see Flag.
 
 
-## Simple Contribute Examples
+## Simple Submit Examples
 
-The <tt>contribute</tt> method is a contribution to edit an existing row or add a new row:
+The <tt>submit</tt> method is a contribution to edit an existing row or add a new row:
 
 ````ruby
-# Contribute a new row to Factual's global dataset
-factual.contribute("global", "user123").values({"name" => "McDenny's", "address" => "1 Main St.", "locality" => "Bedrock", "region" => "BC"}).write
+# Submit a new row to Factual's global dataset
+factual.submit("global", "user123").values({"name" => "McDenny's", "address" => "1 Main St.", "locality" => "Bedrock", "region" => "BC"}).write
 ````
 
 ````ruby
-# Contribute a correction to an existing row in Factual's places dataset.
+# Submit a correction to an existing row in Factual's places dataset.
 # Also set optional comment and reference
-contr = factual.contribute("places", "user123").values({:name => "McDenny's"})
+contr = factual.submit("places", "user123").values({:name => "McDenny's"})
 contr = contr.comment("They changed their name last month").reference("http://www.example.com/mypage.html")
 contr.write
 ````
 
 
-## Required Contribute Parameters
+## Required Submit Parameters
 
 <table>
   <tr>
@@ -550,7 +550,7 @@ contr.write
   </tr>
 </table>
 
-## Optional Contribute Parameters
+## Optional Submit Parameters
 
 <table>
   <tr>
@@ -560,7 +560,7 @@ contr.write
   </tr>
   <tr>
     <td>factual_id</td>
-    <td>The factual_id of the row to which you want to contribute a correction</td>
+    <td>The factual_id of the row to which you want to submit a correction</td>
     <td><tt>.factual_id("0545b03f-9413-44ed-8882-3a9a461848da")</tt></td>
   </tr>
   <tr>
