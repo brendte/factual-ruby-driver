@@ -48,8 +48,16 @@ class Factual
     Write::Flag.new(@api, flag_params)
   end
 
-  def submit(table, user, values = {})
-    submit_params = { :table => table, :user => user, :values => values }
+  def submit(*params)
+    values = {}
+    values = params.last if params.last.is_a? Hash
+
+    table, user, factual_id = params
+    submit_params = {
+      :table => table,
+      :user => user,
+      :factual_id => factual_id,
+      :values => values }
     Write::Submit.new(@api, submit_params)
   end
 
