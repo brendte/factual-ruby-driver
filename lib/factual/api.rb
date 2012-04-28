@@ -3,13 +3,14 @@ require 'cgi'
 
 class Factual
   class API
-    API_V3_HOST        = "http://api.v3.factual.com"
+    API_V3_HOST        = "api.v3.factual.com"
     DRIVER_VERSION_TAG = "factual-ruby-driver-1.0"
     PARAM_ALIASES      = { :search => :q, :sort_asc => :sort }
 
-    def initialize(access_token, debug_mode = false)
+    def initialize(access_token, debug_mode = false, host = nil)
       @access_token = access_token
       @debug_mode = debug_mode
+      @host = host || API_V3_HOST
     end
 
     def get(query, other_params = {})
@@ -18,7 +19,7 @@ class Factual
     end
 
     def post(request)
-      response = make_post_request(API_V3_HOST + request.path, request.body)
+      response = make_post_request("http://" + @host + request.path, request.body)
       payload = JSON.parse(response.body)
       handle_payload(payload)
     end
@@ -28,14 +29,14 @@ class Factual
     end
 
     def raw_read(path)
-      payload = JSON.parse(make_request("#{API_V3_HOST}#{path}").body)
+      payload = JSON.parse(make_request("http://#{@host}#{path}").body)
       handle_payload(payload)
     end
 
     private
 
     def handle_request(action, path, params)
-      url = "#{API_V3_HOST}/#{path}"
+      url = "http://#{@host}/#{path}"
       url += "/#{action}" unless action == :read
       url += "?#{query_string(params)}"
 

@@ -10,7 +10,8 @@ require 'factual/write/submit'
 class Factual
   def initialize(key, secret, options = {})
     debug_mode = options[:debug].nil? ? false : options[:debug]
-    @api = API.new(generate_token(key, secret), debug_mode)
+    host = options[:host]
+    @api = API.new(generate_token(key, secret), debug_mode, host)
   end
 
   def table(table_id_or_alias)
