@@ -44,6 +44,12 @@ describe Factual::Write::Submit do
     @token.last_body.should == "user=user123&values=%7B%22new_key%22%3A%22new_value%22%7D"
   end
 
+  it "should be able to set comment and reference" do
+    @submit.table("places").comment('foobar').reference('yahoo.com/d/').write
+    @token.last_url.should == "http://api.v3.factual.com/t/places/submit"
+    @token.last_body.should == "user=user123&values=%7B%22name%22%3A%22McDonalds%22%7D&comment=foobar&reference=yahoo.com%2Fd%2F"
+  end
+
   it "should not allow an invalid param" do
     raised = false
     begin

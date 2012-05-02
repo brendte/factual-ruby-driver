@@ -3,7 +3,11 @@ require 'factual/write/base'
 class Factual
   module Write
     class Submit < Base
-      VALID_KEYS = [:table, :user, :factual_id, :values]
+      VALID_KEYS = [
+        :table, :user,
+        :factual_id, :values,
+        :comment, :reference
+      ]
 
       def initialize(api, params)
         validate_params(params)
