@@ -5,7 +5,7 @@ class Factual
     class Crosswalk < Base
       def initialize(api, params = {})
         @path = "places/crosswalk"
-        @action = :crosswalk
+        @action = :read
         super(api, params)
       end
 

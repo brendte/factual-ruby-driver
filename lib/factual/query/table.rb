@@ -4,6 +4,12 @@ class Factual
   module Query
     class Table < Base
       DEFAULT_LIMIT = 20
+      VALID_PARAMS  = [
+        :filters, :search, :geo, 
+        :sort, :select, 
+        :limit, :offset, 
+        :include_count
+      ] 
 
       def initialize(api, path, params = {})
         @path = path
@@ -11,7 +17,7 @@ class Factual
         super(api, params)
       end
 
-      [:filters, :search, :geo, :sort, :select, :limit, :offset, :include_count].each do |param|
+      VALID_PARAMS.each do |param|
         define_method(param) do |*args|
           Table.new(@api, @path, @params.merge(param => form_value(args)))
         end

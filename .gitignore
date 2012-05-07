@@ -1,4 +1,4 @@
 .idea/
-test/unit/my_key_pair.rb
+spec/integration/key_secret.yaml
 *.gem
 *.swp
